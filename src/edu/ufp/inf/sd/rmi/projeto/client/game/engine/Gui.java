@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.engine;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.client.game.menus.*;
 import edu.ufp.inf.sd.rmi.projeto.client.game.gui.*;
+import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -39,6 +41,14 @@ public class Gui extends JPanel {
 		new StartMenu();
 		if (Game.error.showing) {add(Game.error);}
 	}
+
+	public void MainScreen(GameSessionRI session, ObserverRI observer) {
+		Game.GameState=Game.State.MENU;
+		removeAll();
+		new MainMenu(session, observer);
+		if (Game.error.showing) {add(Game.error);}
+	}
+
 	/**Creates the InGame screen layout*/
 	public void InGameScreen() {
 		removeAll();

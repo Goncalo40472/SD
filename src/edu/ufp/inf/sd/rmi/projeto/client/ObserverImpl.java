@@ -15,15 +15,16 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     public ObserverImpl(String id) throws RemoteException {
         super();
         this.id = id;
+        lastObserverState = new State(id, "waiting");
     }
 
     @Override
-    public State getLastObserverState() {
+    public State getLastObserverState() throws RemoteException {
         return lastObserverState;
     }
 
     @Override
-    public void update() {
-
+    public void update(String m) throws RemoteException {
+        lastObserverState.setInfo(m);
     }
 }

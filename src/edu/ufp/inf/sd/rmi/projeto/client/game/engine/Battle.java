@@ -23,9 +23,9 @@ public class Battle {
 	public int playersleft = 1;
 	
 	public void NewGame(String mapname) {
-		Game.player = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.players.Base>();
-		Game.builds = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base>();
-		Game.units = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base>();
+		Game.player = new ArrayList<>();
+		Game.builds = new ArrayList<>();
+		Game.units = new ArrayList<>();
 		Game.view.Loc.x = 0;
 		Game.view.Loc.y = 0;
 		if (!Game.map.parse.decode(mapname)) {

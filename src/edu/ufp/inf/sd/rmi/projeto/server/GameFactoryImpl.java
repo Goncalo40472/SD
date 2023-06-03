@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.projeto.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -12,9 +13,13 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
 
     private HashMap<String, LobbyImpl> lobbies;
 
+    private ArrayList<LobbyImpl> lobbiesArray;
+
     public GameFactoryImpl() throws RemoteException {
         super();
         db = new edu.ufp.inf.sd.rmi.projeto.server.DBMockup();
+        this.lobbies = new HashMap<>();
+        this.lobbiesArray = new ArrayList<>();
     }
 
     @Override
@@ -33,8 +38,7 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
 
         if(getDB().exists(username, pwd) && !sessions.containsKey(username)){
 
-            this.lobbies = new HashMap<>();
-            GameSessionImpl session = new GameSessionImpl(this, username, this.lobbies);
+            GameSessionImpl session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
             sessions.put(username, session);
             return session;
 

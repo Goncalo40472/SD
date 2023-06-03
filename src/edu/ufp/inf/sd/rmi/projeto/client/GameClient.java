@@ -1,7 +1,5 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import edu.ufp.inf.sd.rmi.projeto.client.game.engine.Game;
 import edu.ufp.inf.sd.rmi.projeto.server.GameFactoyRI;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
@@ -14,7 +12,6 @@ import java.rmi.registry.Registry;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Date;
 
 /**
  * <p>
@@ -40,6 +37,7 @@ public class GameClient {
      */
     private GameFactoyRI gameFactoyRI;
     private GameSessionRI gameSessionRI;
+    private ObserverRI observerRI;
 
     public static void main(String[] args) {
         if (args != null && args.length < 2) {
@@ -95,6 +93,7 @@ public class GameClient {
         try {
             String username, pwd;
 
+
             Scanner scan = new Scanner(System.in);
             System.out.println("\n\n1- Registar\n2- Login\n\nEscolha um opção: ");
             int option = scan.nextInt();
@@ -111,7 +110,8 @@ public class GameClient {
                     System.out.println("Registo efetuado com sucesso!");
                     this.gameSessionRI = this.gameFactoyRI.login(username, pwd);
                     System.out.println("Logado!");
-                    new Game(this.gameSessionRI);
+                    this.observerRI = new ObserverImpl(username);
+                    new Game(this.gameSessionRI, this.observerRI);
 
                 }else{
 
@@ -132,7 +132,8 @@ public class GameClient {
 
                     this.gameSessionRI = session;
                     System.out.println("Login efetuado com sucesso!");
-                    new Game(this.gameSessionRI);
+                    this.observerRI = new ObserverImpl(username);
+                    new Game(this.gameSessionRI, this.observerRI);
 
                 }else {
 
@@ -141,21 +142,6 @@ public class GameClient {
                 }
 
             }
-
-            /*if(this.gameSessionRI != null) {
-
-                Date expirationTime = new Date(System.currentTimeMillis() + 20000);
-                System.out.println("Waiting..." + new Date(System.currentTimeMillis()));
-
-                do{
-
-
-
-                }while(new Date(System.currentTimeMillis()).before(expirationTime));
-
-                System.out.println("Finished!" + new Date(System.currentTimeMillis()));
-
-            }*/
 
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR finish, bye. ;)");
         } catch (RemoteException ex) {

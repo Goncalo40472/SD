@@ -13,17 +13,17 @@ public class Map {
 	public final int maxsize = 64;
 	public String auther;
 	public String desc;
-	
+
 	/**A square/rectangular area that you play on. Diamond shaped if isometric.*/
 	public Base[][] map;
 	public List<Base> tiles = new ArrayList<Base>();
 	public MapParser parse = new MapParser();
-	
+
 	public Map() {
 		LoadTiles();
 		map = new Base[height][width];
 	}
-	
+
 	public void MapSetup(int width, int height) {
 		//Scale integrity
 		if (width<minsize) {width=minsize;}if (width>maxsize) {width=maxsize;}
@@ -38,7 +38,7 @@ public class Map {
 			}
 		}
 	}
-	
+
 	public void SwitchTiles() {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -112,13 +112,13 @@ public class Map {
 
 	public Base getTile(int i) {
 		switch(i) {
-		case 0:return new Dirt();
-		case 1:return new Forest();
-		case 2:return new Mountain();
-		case 3:return new Water();
-		case 4:return new City();
-		case 5:return new Road();
-		default:return null;
+			case 0:return new Dirt();
+			case 1:return new Forest();
+			case 2:return new Mountain();
+			case 3:return new Water();
+			case 4:return new City();
+			case 5:return new Road();
+			default:return null;
 		}
 	}
 

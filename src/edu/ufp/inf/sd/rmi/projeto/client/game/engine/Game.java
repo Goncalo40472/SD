@@ -1,6 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.engine;
 
-import edu.ufp.inf.sd.rmi.projeto.server.GameFactoyRI;
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
 
 import java.awt.Dimension;
@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 
 public class Game extends JFrame {
 
-	private static GameFactoyRI gameFactoyRI;
-	private static GameSessionRI gameSessionRI;
+	public static GameSessionRI gameSessionRI;
+	public static ObserverRI observerRI;
 
 	private static final long serialVersionUID = 1L;
 	
@@ -53,15 +53,15 @@ public class Game extends JFrame {
 	public static Boolean readytopaint;
 	
 	//This handles the different players and also is used to speed logic arrays (contains a list of all characters they own)
-	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.players.Base> player = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.players.Base>();
-	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base> builds = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base>();
-	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base> units = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base>();
+	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.players.Base> player = new ArrayList<>();
+	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base> builds = new ArrayList<>();
+	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base> units = new ArrayList<>();
 	//These are the lists that will hold commander, building, and unit data to use in the menu's
-	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.players.Base> displayC = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.players.Base>();
-	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base> displayB = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base>();
-	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base> displayU = new ArrayList<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base>();
+	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.players.Base> displayC = new ArrayList<>();
+	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base> displayB = new ArrayList<>();
+	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base> displayU = new ArrayList<>();
 	
-	public Game(GameSessionRI session) {super (name);
+	public Game(GameSessionRI session, ObserverRI observer) {super (name);
 		//Default Settings of the JFrame
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(new Dimension(20*ScreenBase+6,12*ScreenBase+12));
@@ -71,6 +71,7 @@ public class Game extends JFrame {
 	    setLocationRelativeTo(null);
 
 		gameSessionRI = session;
+		observerRI = observer;
 				
 		//Creates all the gui elements and sets them up
 		gui = new Gui(this);
@@ -85,7 +86,7 @@ public class Game extends JFrame {
 		list = new ListData();
 		
 		setVisible(true);//This has been moved down here so that when everything is done, it is shown.
-		gui.LoginScreen();
+		gui.MainScreen(session, observer);
 		save.LoadSettings();
 		GameLoop();
 	}

@@ -3,6 +3,7 @@ package edu.ufp.inf.sd.rmi.projeto.client.game.menus;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -19,20 +20,20 @@ public class StartMenu implements ActionListener {
 	//Single Player
 	public JButton New = new JButton("New Game");
 	public JButton Load = new JButton("Continue");
-	
+
 	//Online
-	public JButton Join = new JButton("Online");
-	
+	public JButton Join = new JButton("Join Game");
+
 	//Other
 	public JButton Editor = new JButton("Editor");
 	public JButton Credits = new JButton("Credits");
 	public JButton Options = new JButton("Options");
 	public JButton Exit = new JButton("Exit");
-	
+
 	//Map list
 	public JList maps_list = new JList();
 	DefaultListModel maps_model = new DefaultListModel();
-	
+
 	public StartMenu() {
 		Point size = MenuHandler.PrepMenu(400,280);
 		MenuHandler.HideBackground();
@@ -82,7 +83,6 @@ public class StartMenu implements ActionListener {
 		Object s = e.getSource();
 		if (s==New) {new PlayerSelection(maps_list.getSelectedValue()+"");}
 		else if (s==Load) {Game.save.LoadGame();MenuHandler.CloseMenu();}
-		else if (s==Join) {new Join();}
 		else if (s==Editor) {
 			Game.edit.StartEditor(
 					"MapName",

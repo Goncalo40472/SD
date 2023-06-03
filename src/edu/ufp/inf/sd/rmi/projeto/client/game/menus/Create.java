@@ -19,23 +19,22 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
-public class Join implements ActionListener{
+public class Create implements ActionListener{
 
     public GameSessionRI session;
     public ObserverRI observer;
 
-    public JButton Next = new JButton("Next");
-
+    public JButton Create = new JButton("Create Lobby");
     public JButton Return = new JButton("Return");
 
     public String mapName;
 
     //Map list
-    public JList lobbies_list = new JList();
+    public JList maps_list = new JList();
 
-    DefaultListModel lobbies_model = new DefaultListModel();
+    DefaultListModel maps_model = new DefaultListModel();
 
-    public Join(String map, GameSessionRI session, ObserverRI observer) throws RemoteException {
+    public Create(String map, GameSessionRI session, ObserverRI observer) throws RemoteException {
         this.mapName = map;
         this.session = session;
         this.observer = observer;
@@ -44,50 +43,41 @@ public class Join implements ActionListener{
         SetBounds(size);
         AddGui();
         AddListeners();
-        LobbyList(size);
+        MapList(size);
     }
 
     private void SetBounds(Point size) {
-        Next.setBounds(size.x,size.y+10+38*1, 100, 32);
+        Create.setBounds(size.x,size.y+10+38*1, 100, 32);
         Return.setBounds(size.x,size.y+10+38*2, 100, 32);
     }
     private void AddGui() {
 
-        Game.gui.add(Next);
+        Game.gui.add(Create);
         Game.gui.add(Return);
     }
-    private void LobbyList(Point size) throws RemoteException {
-
-        for(String lobby : this.session.getLobbiesNames()){
-            if(Objects.equals(lobby.substring(0, lobby.indexOf("#")), mapName)){
-                int currentPlayers = session.getLobbyCurrPlayers(lobby);
-                int maxPlayers = session.getLobbyMaxPlayers(lobby);
-                lobbies_model.addElement(lobby + "     "  + currentPlayers + "/" + maxPlayers);
-            }
-        }
-
-        JScrollPane maps_pane = new JScrollPane(lobbies_list = new JList<>(lobbies_model));
+    private void MapList(Point size) {
+        maps_model = Game.finder.GrabMaps();
+        JScrollPane maps_pane = new JScrollPane(maps_list = new JList(maps_model));
         maps_pane.setBounds(size.x+220, size.y+10, 140, 260);//220,10
         Game.gui.add(maps_pane);
-        lobbies_list.setBounds(0, 0, 140, 260);
-        lobbies_list.setSelectedIndex(0);
+        maps_list.setBounds(0, 0, 140, 260);
+        maps_list.setSelectedIndex(0);
     }
     private void AddListeners() {
-        Next.addActionListener(this);
+        Create.addActionListener(this);
         Return.addActionListener(this);
     }
 
     @Override public void actionPerformed(ActionEvent e) {
         Object s = e.getSource();
-        if (s==Next) {
+        if (s==Create) {
             try {
-                String lobby = (String) lobbies_list.getSelectedValue();
-                String lobbyName = lobby.substring(0, lobby.indexOf(" "))+"";
-                session.joinLobby(lobbyName, observer);
-                new Lobby(lobbyName, session, observer, mapName);
+                String lobbyName = session.createLobby(maps_list.getSelectedValue()+"", observer);
+                new Lobby(lobbyName, session, observer, maps_list.getSelectedValue()+"");
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
+
         }
         else if (s == Return) {
             MenuHandler.CloseMenu();
