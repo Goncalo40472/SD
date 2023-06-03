@@ -13,4 +13,8 @@ public interface LobbyRI extends Remote {
     void removeObserver(ObserverRI o) throws RemoteException;
 
     void notifyObservers(String message) throws RemoteException;
+
+    boolean getGameState() throws RemoteException;
+
+    void setGameState(String s, ObserverRI observer) throws RemoteException;
 }

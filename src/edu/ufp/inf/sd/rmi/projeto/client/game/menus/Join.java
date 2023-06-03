@@ -83,8 +83,17 @@ public class Join implements ActionListener{
             try {
                 String lobby = (String) lobbies_list.getSelectedValue();
                 String lobbyName = lobby.substring(0, lobby.indexOf(" "))+"";
-                session.joinLobby(lobbyName, observer);
-                new Lobby(lobbyName, session, observer, mapName);
+
+                boolean joinLobby = session.joinLobby(lobbyName, observer);
+
+                if(joinLobby && !session.getLobby(lobbyName).getGameState()){
+                    new Lobby(lobbyName, session, observer, mapName);
+                }
+                else if(!joinLobby){
+                    MenuHandler.CloseMenu();
+                    Game.gui.MainScreen(session, observer);
+                }
+
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }

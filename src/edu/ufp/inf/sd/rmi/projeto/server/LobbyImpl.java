@@ -19,6 +19,12 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
     private List<ObserverRI> observers;
     private String name;
 
+    private String state;
+
+    private boolean gameState = false;
+
+    private TokenRing token;
+
     public LobbyImpl(String mapName, int id) throws RemoteException {
         super();
         this.mapName = mapName;
@@ -34,6 +40,8 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
         this.currentPlayers = 0;
 
         this.observers = Collections.synchronizedList(new ArrayList<>());
+
+        this.token = new TokenRing(maxPlayers);
 
     }
 
@@ -68,14 +76,15 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
             currentPlayers++;
 
             if(currentPlayers == maxPlayers) {
-                notifyObservers("starting");
-            }
-            else {
-                notifyObservers("waiting");
+                gameState = true;
+                for(ObserverRI o : observers) {
+                    o.startGame(mapName);
+                }
             }
 
             return true;
         }
+
         return false;
     }
 
@@ -89,6 +98,19 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
     public void notifyObservers(String message) throws RemoteException{
         for (ObserverRI observer: this.getObservers()) {
             observer.update(message);
+        }
+    }
+
+    @Override
+    public boolean getGameState() throws RemoteException {
+        return gameState;
+    }
+
+    @Override
+    public void setGameState(String s, ObserverRI observer) throws RemoteException {
+        if(token.getHolder() == this.observers.indexOf(observer)) {
+            state = s;
+            notifyObservers(state);
         }
     }
 

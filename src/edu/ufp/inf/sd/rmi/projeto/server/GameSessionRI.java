@@ -11,7 +11,7 @@ import java.util.HashMap;
 public interface GameSessionRI extends Remote {
     void leaveLobby(String l, ObserverRI o) throws RemoteException;
 
-    void joinLobby(String l, ObserverRI o) throws RemoteException;
+    boolean joinLobby(String l, ObserverRI o) throws RemoteException;
 
     HashMap<String, LobbyImpl> getLobbies() throws RemoteException;
 
@@ -22,6 +22,8 @@ public interface GameSessionRI extends Remote {
     int getLobbyMaxPlayers(String lobbyName) throws RemoteException;
 
     int getLobbyCurrPlayers(String lobbyName) throws RemoteException;
+
+    LobbyRI getLobby(String lobbyName) throws RemoteException;
 
     public void logout() throws RemoteException;
 

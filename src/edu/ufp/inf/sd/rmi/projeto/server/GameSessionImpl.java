@@ -46,8 +46,15 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     }
 
     @Override
-    public void joinLobby(String lobbyName, ObserverRI observer) throws RemoteException {
-        lobbies.get(lobbyName).registerObserver(observer);
+    public boolean joinLobby(String lobbyName, ObserverRI observer) throws RemoteException {
+        boolean observerState = lobbies.get(lobbyName).registerObserver(observer);
+
+        if(observerState) {
+            observer.setLobby(lobbies.get(lobbyName));
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -79,6 +86,11 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     @Override
     public int getLobbyCurrPlayers(String lobbyName) throws RemoteException{
         return lobbies.get(lobbyName).getCurrentPlayers();
+    }
+
+    @Override
+    public LobbyRI getLobby(String lobbyName) throws RemoteException {
+        return lobbies.get(lobbyName);
     }
 
     @Override

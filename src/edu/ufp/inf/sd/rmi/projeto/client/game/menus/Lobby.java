@@ -30,34 +30,18 @@ public class Lobby implements ActionListener{
 
     public String lobbyName;
     public String map;
-    public boolean loop;
-
-    boolean[] npc = {false,false,false,false};
-    int[] plyer = {0,1,2,3};
 
     public Lobby(String lobbyName, GameSessionRI session, ObserverRI observer, String map) throws RemoteException {
         this.lobbyName = lobbyName;
         this.session = session;
         this.observer = observer;
         this.map = map;
-        this.loop = true;
 
-        if(Objects.equals(observer.getLastObserverState().getInfo(), "waiting")) {
-
-            Point size = MenuHandler.PrepMenu(400,280);
-            MenuHandler.HideBackground();
-            SetBounds(size);
-            AddGui();
-            AddListeners();
-
-        } else if(Objects.equals(observer.getLastObserverState().getInfo(), "starting")) {
-
-            MenuHandler.CloseMenu();
-            Game.btl.NewGame(map);
-            Game.btl.AddCommanders(plyer, npc, 100, 50);
-            Game.gui.InGameScreen();
-
-        }
+        Point size = MenuHandler.PrepMenu(400,280);
+        MenuHandler.HideBackground();
+        SetBounds(size);
+        AddGui();
+        AddListeners();
 
     }
 
