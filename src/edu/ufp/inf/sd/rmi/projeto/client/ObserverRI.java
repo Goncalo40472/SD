@@ -15,7 +15,7 @@ public interface ObserverRI extends Remote {
 
     void startGame(String map) throws RemoteException;
 
-    LobbyRI getLobby();
+    LobbyRI getLobby() throws RemoteException;
 
-    void setLobby(LobbyRI lobby);
+    void setLobby(LobbyRI lobby) throws RemoteException;
 }

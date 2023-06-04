@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 
 import java.rmi.Remote;

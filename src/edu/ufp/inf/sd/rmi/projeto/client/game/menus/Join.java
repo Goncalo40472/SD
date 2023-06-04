@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.menus;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.client.game.engine.Game;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
@@ -22,7 +23,7 @@ import javax.swing.JScrollPane;
 public class Join implements ActionListener{
 
     public GameSessionRI session;
-    public ObserverRI observer;
+    public ObserverImpl observer;
 
     public JButton Next = new JButton("Next");
 
@@ -35,7 +36,7 @@ public class Join implements ActionListener{
 
     DefaultListModel lobbies_model = new DefaultListModel();
 
-    public Join(String map, GameSessionRI session, ObserverRI observer) throws RemoteException {
+    public Join(String map, GameSessionRI session, ObserverImpl observer) throws RemoteException {
         this.mapName = map;
         this.session = session;
         this.observer = observer;

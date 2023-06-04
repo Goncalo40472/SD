@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.engine;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
 
@@ -12,7 +13,7 @@ import javax.swing.JFrame;
 public class Game extends JFrame {
 
 	public static GameSessionRI gameSessionRI;
-	public static ObserverRI observerRI;
+	public static ObserverImpl observer;
 
 	private static final long serialVersionUID = 1L;
 	
@@ -61,7 +62,7 @@ public class Game extends JFrame {
 	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base> displayB = new ArrayList<>();
 	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base> displayU = new ArrayList<>();
 	
-	public Game(GameSessionRI session, ObserverRI observer) {super (name);
+	public Game(GameSessionRI session, ObserverImpl o) {super (name);
 		//Default Settings of the JFrame
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(new Dimension(20*ScreenBase+6,12*ScreenBase+12));
@@ -71,7 +72,7 @@ public class Game extends JFrame {
 	    setLocationRelativeTo(null);
 
 		gameSessionRI = session;
-		observerRI = observer;
+		observer = o;
 				
 		//Creates all the gui elements and sets them up
 		gui = new Gui(this);

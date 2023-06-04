@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.menus;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.client.game.engine.Game;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
@@ -22,7 +23,7 @@ import javax.swing.JScrollPane;
 public class Create implements ActionListener{
 
     public GameSessionRI session;
-    public ObserverRI observer;
+    public ObserverImpl observer;
 
     public JButton Create = new JButton("Create Lobby");
     public JButton Return = new JButton("Return");
@@ -34,7 +35,7 @@ public class Create implements ActionListener{
 
     DefaultListModel maps_model = new DefaultListModel();
 
-    public Create(String map, GameSessionRI session, ObserverRI observer) throws RemoteException {
+    public Create(String map, GameSessionRI session, ObserverImpl observer) throws RemoteException {
         this.mapName = map;
         this.session = session;
         this.observer = observer;

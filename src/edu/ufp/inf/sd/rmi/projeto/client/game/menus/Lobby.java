@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.menus;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.client.game.engine.Game;
+import edu.ufp.inf.sd.rmi.projeto.server.GameSessionImpl;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
 import edu.ufp.inf.sd.rmi.projeto.server.LobbyImpl;
 
@@ -22,7 +24,7 @@ import javax.swing.JScrollPane;
 public class Lobby implements ActionListener{
 
     public GameSessionRI session;
-    public ObserverRI observer;
+    public ObserverImpl observer;
 
     public JButton Return = new JButton("Return");
 
@@ -31,7 +33,7 @@ public class Lobby implements ActionListener{
     public String lobbyName;
     public String map;
 
-    public Lobby(String lobbyName, GameSessionRI session, ObserverRI observer, String map) throws RemoteException {
+    public Lobby(String lobbyName, GameSessionRI session, ObserverImpl observer, String map) throws RemoteException {
         this.lobbyName = lobbyName;
         this.session = session;
         this.observer = observer;

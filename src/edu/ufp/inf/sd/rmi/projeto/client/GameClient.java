@@ -37,7 +37,7 @@ public class GameClient {
      */
     private GameFactoyRI gameFactoyRI;
     private GameSessionRI gameSessionRI;
-    private ObserverRI observerRI;
+    private ObserverImpl observer;
 
     public static void main(String[] args) {
         if (args != null && args.length < 2) {
@@ -110,8 +110,8 @@ public class GameClient {
                     System.out.println("Registo efetuado com sucesso!");
                     this.gameSessionRI = this.gameFactoyRI.login(username, pwd);
                     System.out.println("Logado!");
-                    this.observerRI = new ObserverImpl(username);
-                    new Game(this.gameSessionRI, this.observerRI);
+                    this.observer = new ObserverImpl(username);
+                    new Game(this.gameSessionRI, this.observer);
 
                 }else{
 
@@ -132,8 +132,8 @@ public class GameClient {
 
                     this.gameSessionRI = session;
                     System.out.println("Login efetuado com sucesso!");
-                    this.observerRI = new ObserverImpl(username);
-                    new Game(this.gameSessionRI, this.observerRI);
+                    this.observer = new ObserverImpl(username);
+                    new Game(this.gameSessionRI, this.observer);
 
                 }else {
 

@@ -45,6 +45,8 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
     private final int cancel = KeyEvent.VK_X;
     private final int start = KeyEvent.VK_ENTER;
 
+    private final int endRound = KeyEvent.VK_K;
+
     //Mouse (right/left clicks)
     private final int main = MouseEvent.BUTTON1;
     private final int alt = MouseEvent.BUTTON1;
@@ -64,49 +66,65 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
         if (Game.GameState == Game.State.PLAYING) {
             Base ply = Game.player.get(Game.btl.currentplayer);
 
-            if (i == up) {
-                try {
-                    Game.observerRI.getLobby().setGameState("up", Game.observerRI);
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
+            try{
+
+                System.out.println(Game.observer.getLobby());
+
+                if (i == up) {
+                    try {
+                        Game.observer.getLobby().setGameState("up", Game.observer);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (i == down) {
+                    try {
+                        Game.observer.getLobby().setGameState("down", Game.observer);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (i == left) {
+                    try {
+                        Game.observer.getLobby().setGameState("left", Game.observer);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (i == right) {
+                    try {
+                        Game.observer.getLobby().setGameState("right", Game.observer);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (i == select) {
+                    try {
+                        Game.observer.getLobby().setGameState("select", Game.observer);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (i == cancel) {
+                    try {
+                        Game.observer.getLobby().setGameState("cancel", Game.observer);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (i == start) {
+                    try {
+                        Game.observer.getLobby().setGameState("start", Game.observer);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (i == endRound) {
+                    try {
+                        Game.observer.getLobby().setGameState("endRound", Game.observer);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
-            } else if (i == down) {
-                try {
-                    Game.observerRI.getLobby().setGameState("down", Game.observerRI);
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } else if (i == left) {
-                try {
-                    Game.observerRI.getLobby().setGameState("left", Game.observerRI);
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } else if (i == right) {
-                try {
-                    Game.observerRI.getLobby().setGameState("right", Game.observerRI);
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } else if (i == select) {
-                try {
-                    Game.observerRI.getLobby().setGameState("select", Game.observerRI);
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } else if (i == cancel) {
-                try {
-                    Game.observerRI.getLobby().setGameState("cancel", Game.observerRI);
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } else if (i == start) {
-                try {
-                    Game.observerRI.getLobby().setGameState("start", Game.observerRI);
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
+
+            }catch (RemoteException ex) {
+                ex.printStackTrace();
             }
+
+
         }
         if (Game.GameState == Game.State.EDITOR) {
             if (i == up) {

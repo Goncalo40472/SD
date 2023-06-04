@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.engine;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.client.game.menus.*;
 import edu.ufp.inf.sd.rmi.projeto.client.game.gui.*;
@@ -42,7 +43,7 @@ public class Gui extends JPanel {
 		if (Game.error.showing) {add(Game.error);}
 	}
 
-	public void MainScreen(GameSessionRI session, ObserverRI observer) {
+	public void MainScreen(GameSessionRI session, ObserverImpl observer) {
 		Game.GameState=Game.State.MENU;
 		removeAll();
 		new MainMenu(session, observer);

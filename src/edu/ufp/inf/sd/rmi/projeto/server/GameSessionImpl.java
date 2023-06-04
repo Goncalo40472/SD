@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 
 import java.rmi.RemoteException;
@@ -32,6 +33,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         lobbies.put(lobbyName, lobby);
         lobbiesArray.add(lobby);
         lobby.registerObserver(observer);
+        observer.setLobby(lobby);
         return lobbyName;
     }
 
@@ -47,6 +49,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 
     @Override
     public boolean joinLobby(String lobbyName, ObserverRI observer) throws RemoteException {
+
         boolean observerState = lobbies.get(lobbyName).registerObserver(observer);
 
         if(observerState) {

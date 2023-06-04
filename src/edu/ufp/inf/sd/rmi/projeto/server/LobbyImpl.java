@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 
 import java.rmi.RemoteException;
@@ -111,6 +112,11 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
         if(token.getHolder() == this.observers.indexOf(observer)) {
             state = s;
             notifyObservers(state);
+            if (Objects.equals(this.state, "endRound")){
+
+                token.passToken();
+
+            }
         }
     }
 

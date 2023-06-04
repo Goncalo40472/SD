@@ -16,9 +16,6 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
 
     private String id;
     private State lastObserverState;
-
-    private Game game;
-
     private LobbyRI lobby;
 
     public ObserverImpl(String id) throws RemoteException {
@@ -69,7 +66,7 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
             else if (Objects.equals(m, "start")) {
                 new Pause();
             }
-            else if (Objects.equals(m, "passTurn")) {
+            else if (Objects.equals(m, "endRound")) {
                 MenuHandler.CloseMenu();
                 Game.btl.EndTurn();
             }
@@ -90,12 +87,12 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     }
 
     @Override
-    public LobbyRI getLobby() {
+    public LobbyRI getLobby() throws RemoteException {
         return lobby;
     }
 
     @Override
-    public void setLobby(LobbyRI lobby) {
+    public void setLobby(LobbyRI lobby) throws RemoteException {
         this.lobby = lobby;
     }
 }

@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
+import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.client.game.engine.Game;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
@@ -21,7 +22,7 @@ import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
 public class MainMenu implements ActionListener {
 
     public GameSessionRI session;
-    public ObserverRI observer;
+    public ObserverImpl observer;
 
     //Online
     public JButton Create = new JButton("Create Lobby");
@@ -35,7 +36,7 @@ public class MainMenu implements ActionListener {
     public JList maps_list = new JList();
     DefaultListModel maps_model = new DefaultListModel();
 
-    public MainMenu(GameSessionRI session, ObserverRI observer) {
+    public MainMenu(GameSessionRI session, ObserverImpl observer) {
         this.session = session;
         this.observer = observer;
         Point size = MenuHandler.PrepMenu(400,280);
