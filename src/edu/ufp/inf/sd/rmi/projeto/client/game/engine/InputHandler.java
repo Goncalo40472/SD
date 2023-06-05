@@ -68,56 +68,22 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
 
             try{
 
-                System.out.println(Game.observer.getLobby());
-
                 if (i == up) {
-                    try {
-                        Game.observer.getLobby().setGameState("up", Game.observer);
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    Game.observer.getLobby().setGameState("up", Game.observer);
                 } else if (i == down) {
-                    try {
-                        Game.observer.getLobby().setGameState("down", Game.observer);
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    Game.observer.getLobby().setGameState("down", Game.observer);
                 } else if (i == left) {
-                    try {
-                        Game.observer.getLobby().setGameState("left", Game.observer);
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    Game.observer.getLobby().setGameState("left", Game.observer);
                 } else if (i == right) {
-                    try {
-                        Game.observer.getLobby().setGameState("right", Game.observer);
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    Game.observer.getLobby().setGameState("right", Game.observer);
                 } else if (i == select) {
-                    try {
-                        Game.observer.getLobby().setGameState("select", Game.observer);
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    Game.observer.getLobby().setGameState("select", Game.observer);
                 } else if (i == cancel) {
-                    try {
-                        Game.observer.getLobby().setGameState("cancel", Game.observer);
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    Game.observer.getLobby().setGameState("cancel", Game.observer);
                 } else if (i == start) {
-                    try {
-                        Game.observer.getLobby().setGameState("start", Game.observer);
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    Game.observer.getLobby().setGameState("start", Game.observer);
                 } else if (i == endRound) {
-                    try {
-                        Game.observer.getLobby().setGameState("endRound", Game.observer);
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    Game.observer.getLobby().setGameState("endRound", Game.observer);
                 }
 
             }catch (RemoteException ex) {

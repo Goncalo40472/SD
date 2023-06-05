@@ -47,9 +47,9 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
 
         if(sessions == null) sessions = new HashMap<>();
 
-        User user = getUser(username, pwd);
-
         if(exists(username, pwd)){
+
+            User user = getUser(username, pwd);
 
             if(!usersTokens.containsKey(user)){
 
@@ -73,11 +73,11 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
                     Date expirationDate = new Date(System.currentTimeMillis() + 1800000);
                     String newToken = generateToken(username, pwd, expirationDate);
                     usersTokens.replace(user, token, newToken);
-                }
 
-                GameSessionImpl session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
-                sessions.put(username, session);
-                return session;
+                    GameSessionImpl session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
+                    sessions.put(username, session);
+                    return session;
+                }
 
             }
 
