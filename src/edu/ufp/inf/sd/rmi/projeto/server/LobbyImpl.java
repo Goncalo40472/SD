@@ -101,6 +101,7 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
     public boolean registerObserver(ObserverRI observer) throws RemoteException {
         if(currentPlayers < maxPlayers && !this.observers.contains(observer)){
             getObservers().add(observer);
+            observer.setLobby(this);
             currentPlayers++;
 
             if(currentPlayers == maxPlayers) {
@@ -136,14 +137,29 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
 
     @Override
     public void setGameState(String s, ObserverRI observer) throws RemoteException {
-        if(token.getHolder() == this.observers.indexOf(observer)) {
-            state = s;
-            notifyObservers(state);
-            if (Objects.equals(this.state, "endRound")){
 
-                token.passToken();
+        if(this.channel != null) {
 
+            createQueues();
+
+            try{
+                listenQueues();
+            }catch (IOException ex){
+                ex.printStackTrace();
             }
+        }
+        else{
+
+            if(token.getHolder() == this.observers.indexOf(observer)) {
+                state = s;
+                notifyObservers(state);
+                if (Objects.equals(this.state, "endRound")){
+
+                    token.passToken();
+
+                }
+            }
+
         }
     }
 
@@ -168,8 +184,8 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
             int obs = Integer.parseInt(args[0]);
             String msg = args[1];
 
-            if (this.token.getHolder() == obs) { // check to see if message comes from token holder
-                // send command to all clients
+            if (this.token.getHolder() == obs) {
+
                 this.channel.basicPublish("lobbyFanout-" + this.getId(), "", null, msg.getBytes("UTF-8"));
 
                 if (msg.compareTo("endRound") == 0) {

@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import com.rabbitmq.client.Channel;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 
@@ -25,6 +26,10 @@ public interface GameSessionRI extends Remote {
     int getLobbyCurrPlayers(String lobbyName) throws RemoteException;
 
     LobbyRI getLobby(String lobbyName) throws RemoteException;
+
+    Channel getChannel() throws RemoteException;
+
+    boolean channelExists() throws RemoteException;
 
     public void logout() throws RemoteException;
 

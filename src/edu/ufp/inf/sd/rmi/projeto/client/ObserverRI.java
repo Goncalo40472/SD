@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
 import com.rabbitmq.client.Channel;
+import edu.ufp.inf.sd.rmi.projeto.server.LobbyImpl;
 import edu.ufp.inf.sd.rmi.projeto.server.LobbyRI;
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 

@@ -1,7 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
 import com.rabbitmq.client.Channel;
-import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 
 import java.rmi.RemoteException;
@@ -29,10 +28,19 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         this.lobbiesArray =  lobbiesArray;
     }
 
+    public GameSessionImpl(GameFactoyRI gameFactoyRI, String username, HashMap<String, LobbyImpl> lobbies, ArrayList<LobbyImpl> lobbiesArray, Channel channel) throws RemoteException {
+        super();
+        this.gameFactoyRI = gameFactoyRI;
+        this.username = username;
+        this.lobbies = lobbies;
+        this.lobbiesArray =  lobbiesArray;
+        this.channel = channel;
+    }
+
     @Override
     public String createLobby(String mapName, ObserverRI observer) throws RemoteException{
 
-        LobbyImpl lobby = null;
+        LobbyImpl lobby;
 
         if(this.channel != null) {
             lobby = new LobbyImpl(mapName, this.lobbies.size(), channel);
@@ -41,11 +49,13 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
             lobby = new LobbyImpl(mapName, this.lobbies.size());
         }
 
+        LobbyRI lobbyRI = lobby;
+
         String lobbyName = mapName + "#" + lobby.getId();
         lobbies.put(lobbyName, lobby);
         lobbiesArray.add(lobby);
         lobby.registerObserver(observer);
-        observer.setLobby(lobby);
+        observer.setLobby(lobbyRI);
         return lobbyName;
     }
 
@@ -104,8 +114,18 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     }
 
     @Override
-    public LobbyRI getLobby(String lobbyName) throws RemoteException {
+    public LobbyImpl getLobby(String lobbyName) throws RemoteException {
         return lobbies.get(lobbyName);
+    }
+
+    @Override
+    public Channel getChannel() throws RemoteException {
+        return channel;
+    }
+
+    @Override
+    public boolean channelExists() throws RemoteException {
+        return this.channel != null;
     }
 
     @Override

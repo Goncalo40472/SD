@@ -63,12 +63,20 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
         if(exists(username, pwd)){
 
             User user = getUser(username, pwd);
+            GameSessionImpl session;
 
             if(!usersTokens.containsKey(user)){
 
                 String token = generateToken(username, pwd, new Date(System.currentTimeMillis() + 1800000));
                 usersTokens.put(user, token);
-                GameSessionImpl session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
+
+                if(channel != null){
+                     session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray, channel);
+                }
+                else{
+                    session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
+                }
+
                 sessions.put(username, session);
                 return session;
             }
@@ -86,11 +94,17 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
                     Date expirationDate = new Date(System.currentTimeMillis() + 1800000);
                     String newToken = generateToken(username, pwd, expirationDate);
                     usersTokens.replace(user, token, newToken);
-
-                    GameSessionImpl session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
-                    sessions.put(username, session);
-                    return session;
                 }
+
+                if(channel != null){
+                    session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray, channel);
+                }
+                else{
+                    session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
+                }
+
+                sessions.put(username, session);
+                return session;
 
             }
 

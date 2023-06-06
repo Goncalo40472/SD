@@ -111,7 +111,13 @@ public class GameClient {
                     this.gameSessionRI = this.gameFactoyRI.login(username, pwd);
                     System.out.println("Logado!");
                     this.observer = new ObserverImpl(username);
-                    new Game(this.gameSessionRI, this.observer);
+
+                    if(this.gameSessionRI.channelExists()){
+                        new Game(this.gameSessionRI, this.observer, this.gameFactoyRI, "rabbit");
+                    }
+                    else {
+                        new Game(this.gameSessionRI, this.observer, this.gameFactoyRI);
+                    }
 
                 }else{
 
@@ -133,7 +139,13 @@ public class GameClient {
                     this.gameSessionRI = session;
                     System.out.println("Login efetuado com sucesso!");
                     this.observer = new ObserverImpl(username);
-                    new Game(this.gameSessionRI, this.observer);
+
+                    if(this.gameSessionRI.channelExists()){
+                        new Game(this.gameSessionRI, this.observer, this.gameFactoyRI, "rabbit");
+                    }
+                    else {
+                        new Game(this.gameSessionRI, this.observer, this.gameFactoyRI);
+                    }
 
                 }else {
 

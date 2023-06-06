@@ -24,7 +24,7 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     private State lastObserverState;
     private LobbyRI lobby;
     private Connection connection;
-    private Channel channel;
+    public Channel channel;
 
     public ObserverImpl(String id) throws RemoteException {
         super();
@@ -107,15 +107,14 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
 
         try{
 
-            Channel channel = this.connection.createChannel();
-
             channel.exchangeDeclare("lobbyFanout-" + lobby.getId(), "fanout");
             String queueName = channel.queueDeclare().getQueue();
             channel.queueBind(queueName, "lobbyFanout-" + lobby.getId(), "");
 
+            System.out.println();
+
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
                 this.rabbitUpdate(message);
             };
             channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
@@ -130,9 +129,9 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         try {
-            this.connection = factory.newConnection();
-            this.channel = this.connection.createChannel();
-            getChannel().queueDeclare("lobbyQueue-" + lobby.getId(), false, false, false, null);
+            connection = factory.newConnection();
+            channel = connection.createChannel();
+            channel.queueDeclare("lobbyQueue-" + lobby.getId(), false, false, false, null);
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }

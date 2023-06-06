@@ -123,10 +123,10 @@ public class GameServer {
         this.connection = factory.newConnection();
 
         /* UNCOMMENT TO RUN PROJECT USING RABBITMQ */
-        this.channel = this.connection.createChannel();
+        //this.channel = this.connection.createChannel();
 
         /* UNCOMMENT TO RUN PROJECT USING RMI */
-        //this.channel = null;
+        this.channel = null;
 
     }
 
