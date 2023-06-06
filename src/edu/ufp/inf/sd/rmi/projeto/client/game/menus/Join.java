@@ -22,9 +22,6 @@ import javax.swing.JScrollPane;
 
 public class Join implements ActionListener{
 
-    public GameSessionRI session;
-    public ObserverImpl observer;
-
     public JButton Next = new JButton("Next");
 
     public JButton Return = new JButton("Return");
@@ -36,10 +33,8 @@ public class Join implements ActionListener{
 
     DefaultListModel lobbies_model = new DefaultListModel();
 
-    public Join(String map, GameSessionRI session, ObserverImpl observer) throws RemoteException {
+    public Join(String map) throws RemoteException {
         this.mapName = map;
-        this.session = session;
-        this.observer = observer;
         Point size = MenuHandler.PrepMenu(400,280);
         MenuHandler.HideBackground();
         SetBounds(size);
@@ -59,10 +54,10 @@ public class Join implements ActionListener{
     }
     private void LobbyList(Point size) throws RemoteException {
 
-        for(String lobby : this.session.getLobbiesNames()){
+        for(String lobby : Game.gameSessionRI.getLobbiesNames()){
             if(Objects.equals(lobby.substring(0, lobby.indexOf("#")), mapName)){
-                int currentPlayers = session.getLobbyCurrPlayers(lobby);
-                int maxPlayers = session.getLobbyMaxPlayers(lobby);
+                int currentPlayers = Game.gameSessionRI.getLobbyCurrPlayers(lobby);
+                int maxPlayers = Game.gameSessionRI.getLobbyMaxPlayers(lobby);
                 lobbies_model.addElement(lobby + "     "  + currentPlayers + "/" + maxPlayers);
             }
         }
@@ -85,14 +80,14 @@ public class Join implements ActionListener{
                 String lobby = (String) lobbies_list.getSelectedValue();
                 String lobbyName = lobby.substring(0, lobby.indexOf(" "))+"";
 
-                boolean joinLobby = session.joinLobby(lobbyName, observer);
+                boolean joinLobby = Game.gameSessionRI.joinLobby(lobbyName, Game.observer);
 
-                if(joinLobby && !session.getLobby(lobbyName).getGameState()){
-                    new Lobby(lobbyName, session, observer, mapName);
+                if(joinLobby && !Game.gameSessionRI.getLobby(lobbyName).getGameState()){
+                    new Lobby(lobbyName, mapName);
                 }
                 else if(!joinLobby){
                     MenuHandler.CloseMenu();
-                    Game.gui.MainScreen(session, observer);
+                    Game.gui.MainScreen();
                 }
 
             } catch (RemoteException ex) {
@@ -101,7 +96,7 @@ public class Join implements ActionListener{
         }
         else if (s == Return) {
             MenuHandler.CloseMenu();
-            Game.gui.MainScreen(session, observer);
+            Game.gui.MainScreen();
         }
     }
 

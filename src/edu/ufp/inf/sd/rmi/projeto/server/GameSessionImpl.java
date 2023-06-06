@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import com.rabbitmq.client.Channel;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 
@@ -18,6 +19,8 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 
     private ArrayList<LobbyImpl> lobbiesArray;
 
+    private Channel channel;
+
     public GameSessionImpl(GameFactoyRI gameFactoyRI, String username, HashMap<String, LobbyImpl> lobbies, ArrayList<LobbyImpl> lobbiesArray) throws RemoteException {
         super();
         this.gameFactoyRI = gameFactoyRI;
@@ -28,7 +31,16 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 
     @Override
     public String createLobby(String mapName, ObserverRI observer) throws RemoteException{
-        LobbyImpl lobby = new LobbyImpl(mapName, this.lobbies.size());
+
+        LobbyImpl lobby = null;
+
+        if(this.channel != null) {
+            lobby = new LobbyImpl(mapName, this.lobbies.size(), channel);
+        }
+        else{
+            lobby = new LobbyImpl(mapName, this.lobbies.size());
+        }
+
         String lobbyName = mapName + "#" + lobby.getId();
         lobbies.put(lobbyName, lobby);
         lobbiesArray.add(lobby);

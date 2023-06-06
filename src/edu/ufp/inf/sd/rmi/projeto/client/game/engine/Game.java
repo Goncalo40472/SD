@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.engine;
 
+import com.rabbitmq.client.Channel;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
+import edu.ufp.inf.sd.rmi.projeto.server.GameFactoyRI;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
 
 import java.awt.Dimension;
@@ -14,6 +16,11 @@ public class Game extends JFrame {
 
 	public static GameSessionRI gameSessionRI;
 	public static ObserverImpl observer;
+
+	public static GameFactoyRI gameFactoyRI;
+	public static Channel channel;
+
+	public static boolean rabbitmq = false;
 
 	private static final long serialVersionUID = 1L;
 	
@@ -87,7 +94,39 @@ public class Game extends JFrame {
 		list = new ListData();
 		
 		setVisible(true);//This has been moved down here so that when everything is done, it is shown.
-		gui.MainScreen(session, observer);
+		gui.MainScreen();
+		save.LoadSettings();
+		GameLoop();
+	}
+
+	public Game(GameFactoyRI factory, Channel c) {super (name);
+		//Default Settings of the JFrame
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(new Dimension(20*ScreenBase+6,12*ScreenBase+12));
+		setBounds(0,0,20*ScreenBase+6,12*ScreenBase+12);
+		setUndecorated(false);
+		setResizable(false);
+		setLocationRelativeTo(null);
+
+		gameFactoyRI = factory;
+		channel = c;
+
+		rabbitmq = true;
+
+		//Creates all the gui elements and sets them up
+		gui = new Gui(this);
+		add(gui);
+		gui.setFocusable(true);
+		gui.requestFocusInWindow();
+
+		//load images, initialize the map, and adds the input settings.
+		load = new LoadImages();
+		map = new Map();
+		input = new InputHandler();
+		list = new ListData();
+
+		setVisible(true);//This has been moved down here so that when everything is done, it is shown.
+		gui.MainScreen();
 		save.LoadSettings();
 		GameLoop();
 	}

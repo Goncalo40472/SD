@@ -12,6 +12,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.rabbitmq.client.Channel;
 
 public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI {
 
@@ -24,6 +25,8 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
 
     private HashMap<User, String> usersTokens;
 
+    private Channel channel;
+
     public GameFactoryImpl() throws RemoteException {
         super();
         users = new ArrayList();
@@ -31,6 +34,16 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
         this.lobbies = new HashMap<>();
         this.lobbiesArray = new ArrayList<>();
         this.usersTokens = new HashMap<>();
+    }
+
+    public GameFactoryImpl(Channel channel) throws RemoteException {
+        super();
+        users = new ArrayList();
+        users.add(new User("guest", "ufp"));
+        this.lobbies = new HashMap<>();
+        this.lobbiesArray = new ArrayList<>();
+        this.usersTokens = new HashMap<>();
+        this.channel = channel;
     }
 
     @Override
@@ -128,5 +141,10 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
 
         return null;
 
+    }
+
+    @Override
+    public boolean channelExists() throws RemoteException {
+        return this.channel != null;
     }
 }

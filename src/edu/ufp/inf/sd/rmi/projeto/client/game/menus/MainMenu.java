@@ -21,9 +21,6 @@ import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
  */
 public class MainMenu implements ActionListener {
 
-    public GameSessionRI session;
-    public ObserverImpl observer;
-
     //Online
     public JButton Create = new JButton("Create Lobby");
     public JButton Join = new JButton("Join Game");
@@ -36,9 +33,7 @@ public class MainMenu implements ActionListener {
     public JList maps_list = new JList();
     DefaultListModel maps_model = new DefaultListModel();
 
-    public MainMenu(GameSessionRI session, ObserverImpl observer) {
-        this.session = session;
-        this.observer = observer;
+    public MainMenu() {
         Point size = MenuHandler.PrepMenu(400,280);
         MenuHandler.HideBackground();
         SetBounds(size);
@@ -78,14 +73,14 @@ public class MainMenu implements ActionListener {
         Object s = e.getSource();
         if (s==Join) {
             try {
-                new Join(maps_list.getSelectedValue()+"", this.session, this.observer);
+                new Join(maps_list.getSelectedValue()+"");
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
         }
         else if (s==Create) {
             try {
-                new Create(maps_list.getSelectedValue()+"", this.session, this.observer);
+                new Create(maps_list.getSelectedValue()+"");
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }

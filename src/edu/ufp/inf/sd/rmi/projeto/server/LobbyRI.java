@@ -9,6 +9,8 @@ import java.rmi.RemoteException;
 
 public interface LobbyRI extends Remote {
 
+    int getId () throws RemoteException;
+
     boolean registerObserver(ObserverRI o) throws RemoteException;
 
     void removeObserver(ObserverRI o) throws RemoteException;

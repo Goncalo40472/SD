@@ -22,9 +22,6 @@ import javax.swing.JScrollPane;
 
 public class Create implements ActionListener{
 
-    public GameSessionRI session;
-    public ObserverImpl observer;
-
     public JButton Create = new JButton("Create Lobby");
     public JButton Return = new JButton("Return");
 
@@ -35,10 +32,8 @@ public class Create implements ActionListener{
 
     DefaultListModel maps_model = new DefaultListModel();
 
-    public Create(String map, GameSessionRI session, ObserverImpl observer) throws RemoteException {
+    public Create(String map) throws RemoteException {
         this.mapName = map;
-        this.session = session;
-        this.observer = observer;
         Point size = MenuHandler.PrepMenu(400,280);
         MenuHandler.HideBackground();
         SetBounds(size);
@@ -73,8 +68,8 @@ public class Create implements ActionListener{
         Object s = e.getSource();
         if (s==Create) {
             try {
-                String lobbyName = session.createLobby(maps_list.getSelectedValue()+"", observer);
-                new Lobby(lobbyName, session, observer, maps_list.getSelectedValue()+"");
+                String lobbyName = Game.gameSessionRI.createLobby(maps_list.getSelectedValue()+"", Game.observer);
+                new Lobby(lobbyName, maps_list.getSelectedValue()+"");
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
@@ -82,7 +77,7 @@ public class Create implements ActionListener{
         }
         else if (s == Return) {
             MenuHandler.CloseMenu();
-            Game.gui.MainScreen(session, observer);
+            Game.gui.MainScreen();
         }
     }
 

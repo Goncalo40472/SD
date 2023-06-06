@@ -23,9 +23,6 @@ import javax.swing.JScrollPane;
 
 public class Lobby implements ActionListener{
 
-    public GameSessionRI session;
-    public ObserverImpl observer;
-
     public JButton Return = new JButton("Return");
 
     public JLabel Waiting = new JLabel("Waiting for players...");
@@ -33,10 +30,8 @@ public class Lobby implements ActionListener{
     public String lobbyName;
     public String map;
 
-    public Lobby(String lobbyName, GameSessionRI session, ObserverImpl observer, String map) throws RemoteException {
+    public Lobby(String lobbyName, String map) throws RemoteException {
         this.lobbyName = lobbyName;
-        this.session = session;
-        this.observer = observer;
         this.map = map;
 
         Point size = MenuHandler.PrepMenu(400,280);
@@ -65,9 +60,9 @@ public class Lobby implements ActionListener{
         Object s = e.getSource();
         if (s == Return) {
             try {
-                session.leaveLobby(lobbyName, observer);
+                Game.gameSessionRI.leaveLobby(lobbyName, Game.observer);
                 MenuHandler.CloseMenu();
-                Game.gui.MainScreen(session, observer);
+                Game.gui.MainScreen();
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }

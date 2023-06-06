@@ -43,10 +43,10 @@ public class Gui extends JPanel {
 		if (Game.error.showing) {add(Game.error);}
 	}
 
-	public void MainScreen(GameSessionRI session, ObserverImpl observer) {
+	public void MainScreen() {
 		Game.GameState=Game.State.MENU;
 		removeAll();
-		new MainMenu(session, observer);
+		new MainMenu();
 		if (Game.error.showing) {add(Game.error);}
 	}
 

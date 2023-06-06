@@ -87,7 +87,7 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @set JAVAPROJ_DIST_FOLDER=%JAVAPROJ%\%JAVAPROJ_DIST%
 @set JAVAPROJ_JAR_FILE=%JAVAPROJ_NAME%.jar
 
-@set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;%JAVAPROJ%\lib\jackson-annotations-2.14.2.jar;%JAVAPROJ%\lib\jackson-core-2.14.2.jar;%JAVAPROJ%\lib\jackson-databind-2.14.2.jar;%JAVAPROJ%\lib\java-jwt-4.4.0.jar;
+@set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;C:\Users\gonca\IdeaProjects\SD\lib\*;
 @REM @set CLASSPATH=.;%JAVAPROJ_DIST_FOLDER%/%JAVAPROJ_JAR_FILE%.jar
 
 

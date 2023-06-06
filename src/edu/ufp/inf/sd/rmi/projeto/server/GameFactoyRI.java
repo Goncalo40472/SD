@@ -13,4 +13,6 @@ public interface GameFactoyRI extends Remote {
     String generateToken(String username, String password, Date expirationDate) throws RemoteException;
 
     public void removeSessions(String username) throws RemoteException;
+
+    boolean channelExists() throws RemoteException;
 }
