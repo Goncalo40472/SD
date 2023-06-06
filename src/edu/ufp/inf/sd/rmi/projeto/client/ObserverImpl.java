@@ -39,8 +39,11 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
 
     @Override
     public void update(String m) throws RemoteException {
+
         if (Game.GameState==Game.State.PLAYING) {
+
             Base ply = Game.player.get(Game.btl.currentplayer);
+
             if (Objects.equals(m, "up")) {
                 ply.selecty--;
                 if (ply.selecty<0) {
@@ -138,7 +141,9 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     private void rabbitUpdate(String m) {
 
         if (Game.GameState == Game.State.PLAYING) {
+
             Base ply = Game.player.get(Game.btl.currentplayer);
+
             if (Objects.equals(m, "up")) {
                 ply.selecty--;
                 if (ply.selecty<0) {
