@@ -14,5 +14,4 @@ public interface GameFactoyRI extends Remote {
 
     public void removeSessions(String username) throws RemoteException;
 
-    boolean channelExists() throws RemoteException;
 }

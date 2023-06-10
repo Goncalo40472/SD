@@ -66,9 +66,7 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
         if (i == exit) {
             System.exit(0);
         }
-        if (Game.GameState == Game.State.PLAYING && !Game.rabbitmq) {
-
-            Base ply = Game.player.get(Game.btl.currentplayer);
+        if (Game.GameState == Game.State.PLAYING) {
 
             try{
                 if (i == up) {
@@ -93,41 +91,6 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
             }
         }
 
-        if (Game.GameState == Game.State.PLAYING && Game.rabbitmq) {
-
-            Base ply = Game.player.get(Game.btl.currentplayer);
-
-            try{
-                LobbyRI lobbyRI = Game.observer.getLobby();
-                String queue = "lobbyQueue-" + lobbyRI.getId();
-                if (i == up) {
-                    String msg = "up" + Game.observer.getID();
-                    Game.observer.getChannel().basicPublish("", "", null, msg.getBytes(StandardCharsets.UTF_8));
-                } else if (i == down) {
-                    String msg = "down" + Game.observer.getID();
-                    Game.observer.getChannel().basicPublish("", "", null, msg.getBytes(StandardCharsets.UTF_8));
-                } else if (i == left) {
-                    String msg = "left" + Game.observer.getID();
-                    Game.observer.getChannel().basicPublish("", "", null, msg.getBytes(StandardCharsets.UTF_8));
-                } else if (i == right) {
-                    String msg = "right" + Game.observer.getID();
-                    Game.observer.getChannel().basicPublish("", "", null, msg.getBytes(StandardCharsets.UTF_8));
-                } else if (i == select) {
-                    String msg = "select" + Game.observer.getID();
-                    Game.observer.getChannel().basicPublish("", "", null, msg.getBytes(StandardCharsets.UTF_8));
-                } else if (i == cancel) {
-                    String msg = "cancel" + Game.observer.getID();
-                    Game.observer.getChannel().basicPublish("", "", null, msg.getBytes(StandardCharsets.UTF_8));                } else if (i == start) {
-                } else if (i == endRound) {
-                    String msg = "endRound" + Game.observer.getID();
-                    Game.observer.getChannel().basicPublish("", "", null, msg.getBytes(StandardCharsets.UTF_8));
-                }
-            }catch (RemoteException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
         if (Game.GameState == Game.State.EDITOR) {
             if (i == up) {
                 Game.edit.selecty--;

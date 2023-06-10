@@ -1,8 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.engine;
 
-import com.rabbitmq.client.Channel;
+
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverImpl;
-import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.projeto.server.GameFactoyRI;
 import edu.ufp.inf.sd.rmi.projeto.server.GameSessionRI;
 
@@ -17,12 +16,6 @@ public class Game extends JFrame {
 
 	public static GameSessionRI gameSessionRI;
 	public static ObserverImpl observer;
-
-	public static GameFactoyRI gameFactoyRI;
-	public static Channel channel;
-
-	public static boolean rabbitmq = false;
-
 	private static final long serialVersionUID = 1L;
 	
 	//Application Settings
@@ -70,7 +63,7 @@ public class Game extends JFrame {
 	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base> displayB = new ArrayList<>();
 	public static List<edu.ufp.inf.sd.rmi.projeto.client.game.units.Base> displayU = new ArrayList<>();
 	
-	public Game(GameSessionRI session, ObserverImpl o, GameFactoyRI factory) {super (name);
+	public Game(GameSessionRI session, ObserverImpl o) throws RemoteException {super (name);
 		//Default Settings of the JFrame
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(new Dimension(20*ScreenBase+6,12*ScreenBase+12));
@@ -80,7 +73,6 @@ public class Game extends JFrame {
 	    setLocationRelativeTo(null);
 
 		gameSessionRI = session;
-		gameFactoyRI = factory;
 		observer = o;
 				
 		//Creates all the gui elements and sets them up
@@ -101,41 +93,7 @@ public class Game extends JFrame {
 		GameLoop();
 	}
 
-	public Game(GameSessionRI session, ObserverImpl o, GameFactoyRI factory, String rabbit) throws RemoteException {super (name);
-		//Default Settings of the JFrame
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(new Dimension(20*ScreenBase+6,12*ScreenBase+12));
-		setBounds(0,0,20*ScreenBase+6,12*ScreenBase+12);
-		setUndecorated(false);
-		setResizable(false);
-		setLocationRelativeTo(null);
-
-		gameSessionRI = session;
-		gameFactoyRI = factory;
-		observer = o;
-		channel = o.channel;
-
-		rabbitmq = true;
-
-		//Creates all the gui elements and sets them up
-		gui = new Gui(this);
-		add(gui);
-		gui.setFocusable(true);
-		gui.requestFocusInWindow();
-
-		//load images, initialize the map, and adds the input settings.
-		load = new LoadImages();
-		map = new Map();
-		input = new InputHandler();
-		list = new ListData();
-
-		setVisible(true);//This has been moved down here so that when everything is done, it is shown.
-		gui.MainScreen();
-		save.LoadSettings();
-		GameLoop();
-	}
-
-	private void GameLoop() {
+	private void GameLoop() throws RemoteException {
 		boolean loop=true;
 		long last = System.nanoTime();
 		long lastCPSTime = 0;

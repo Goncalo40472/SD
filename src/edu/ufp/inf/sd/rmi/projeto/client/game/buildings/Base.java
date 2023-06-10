@@ -3,6 +3,8 @@ package edu.ufp.inf.sd.rmi.projeto.client.game.buildings;
 import edu.ufp.inf.sd.rmi.projeto.client.game.engine.Game;
 import edu.ufp.inf.sd.rmi.projeto.client.game.menus.*;
 
+import java.rmi.RemoteException;
+
 public class Base {
 	//Image and other info
 	/**(y*width+x) = id so when saving it can place it in the correct location.*/
@@ -37,7 +39,7 @@ public class Base {
 		img=0;
 	}
 
-	public void OpenMenu() {
+	public void OpenMenu() throws RemoteException {
 		if (Menu!=null) {
 			new City(Menu, x, y);
 		}

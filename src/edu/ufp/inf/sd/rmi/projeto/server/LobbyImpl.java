@@ -1,10 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -28,8 +25,6 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
 
     private TokenRing token;
 
-    private Channel channel;
-
     public LobbyImpl(String mapName, int id) throws RemoteException {
         super();
         this.mapName = mapName;
@@ -47,28 +42,6 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
         this.observers = Collections.synchronizedList(new ArrayList<>());
 
         this.token = new TokenRing(maxPlayers);
-
-    }
-
-    public LobbyImpl(String mapName, int id, Channel channel) throws RemoteException {
-        super();
-        this.mapName = mapName;
-        this.id = id;
-        this.name = mapName + "#" + this.id;
-
-        if(Objects.equals(mapName, "FourCorners")){
-            maxPlayers = 4;
-        } else if (Objects.equals(mapName, "SmallVs")) {
-            maxPlayers = 2;
-        }
-
-        this.currentPlayers = 0;
-
-        this.observers = Collections.synchronizedList(new ArrayList<>());
-
-        this.token = new TokenRing(maxPlayers);
-
-        this.channel = channel;
 
     }
 
@@ -93,7 +66,8 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
         return currentPlayers;
     }
 
-    public List<ObserverRI> getObservers() {
+    @Override
+    public List<ObserverRI> getObservers() throws RemoteException {
         return observers;
     }
 
@@ -138,63 +112,19 @@ public class LobbyImpl extends UnicastRemoteObject implements LobbyRI {
     @Override
     public void setGameState(String s, ObserverRI observer) throws RemoteException {
 
-        if(this.channel != null) {
+        if(isCurrentPlayer(observer)) {
+            state = s;
+            notifyObservers(state);
 
-            createQueues();
-
-            try{
-                listenQueues();
-            }catch (IOException ex){
-                ex.printStackTrace();
+            if (Objects.equals(this.state, "endRound")) {
+                token.passToken();
             }
-        }
-        else{
-
-            if(token.getHolder() == this.observers.indexOf(observer)) {
-                state = s;
-                notifyObservers(state);
-                if (Objects.equals(this.state, "endRound")){
-
-                    token.passToken();
-
-                }
-            }
-
         }
     }
 
-    public void createQueues() throws RemoteException {
-
-        try{
-            channel.exchangeDeclare("lobbyFanout-" + this.getId(), "fanout");
-            channel.queueDeclare("lobbyQueue-" + this.getId(), false, false, false, null);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    public void listenQueues() throws IOException {
-
-        DeliverCallback deliver = (consumerTag, delivery) -> {
-
-            String[] args = new String(delivery.getBody(), "UTF-8").split(",");
-
-            int obs = Integer.parseInt(args[0]);
-            String msg = args[1];
-
-            if (this.token.getHolder() == obs) {
-
-                this.channel.basicPublish("lobbyFanout-" + this.getId(), "", null, msg.getBytes("UTF-8"));
-
-                if (msg.compareTo("endRound") == 0) {
-                    this.token.passToken();
-                }
-            }
-        };
-        this.channel.basicConsume("lobbyQueue-" + this.getId(), true, deliver, consumerTag -> { });
-
+    @Override
+    public boolean isCurrentPlayer(ObserverRI observer) throws RemoteException {
+        return token.getHolder() == this.observers.indexOf(observer);
     }
 
 }

@@ -15,8 +15,6 @@ public interface GameSessionRI extends Remote {
 
     boolean joinLobby(String l, ObserverRI o) throws RemoteException;
 
-    HashMap<String, LobbyImpl> getLobbies() throws RemoteException;
-
     ArrayList<LobbyImpl> getArrayLobbies() throws RemoteException;
 
     ArrayList<String> getLobbiesNames() throws RemoteException;
@@ -26,10 +24,6 @@ public interface GameSessionRI extends Remote {
     int getLobbyCurrPlayers(String lobbyName) throws RemoteException;
 
     LobbyRI getLobby(String lobbyName) throws RemoteException;
-
-    Channel getChannel() throws RemoteException;
-
-    boolean channelExists() throws RemoteException;
 
     public void logout() throws RemoteException;
 

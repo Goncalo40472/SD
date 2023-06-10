@@ -18,8 +18,6 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 
     private ArrayList<LobbyImpl> lobbiesArray;
 
-    private Channel channel;
-
     public GameSessionImpl(GameFactoyRI gameFactoyRI, String username, HashMap<String, LobbyImpl> lobbies, ArrayList<LobbyImpl> lobbiesArray) throws RemoteException {
         super();
         this.gameFactoyRI = gameFactoyRI;
@@ -28,34 +26,16 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         this.lobbiesArray =  lobbiesArray;
     }
 
-    public GameSessionImpl(GameFactoyRI gameFactoyRI, String username, HashMap<String, LobbyImpl> lobbies, ArrayList<LobbyImpl> lobbiesArray, Channel channel) throws RemoteException {
-        super();
-        this.gameFactoyRI = gameFactoyRI;
-        this.username = username;
-        this.lobbies = lobbies;
-        this.lobbiesArray =  lobbiesArray;
-        this.channel = channel;
-    }
-
     @Override
     public String createLobby(String mapName, ObserverRI observer) throws RemoteException{
 
-        LobbyImpl lobby;
-
-        if(this.channel != null) {
-            lobby = new LobbyImpl(mapName, this.lobbies.size(), channel);
-        }
-        else{
-            lobby = new LobbyImpl(mapName, this.lobbies.size());
-        }
-
-        LobbyRI lobbyRI = lobby;
+        LobbyImpl lobby = new LobbyImpl(mapName, this.lobbies.size());
 
         String lobbyName = mapName + "#" + lobby.getId();
         lobbies.put(lobbyName, lobby);
         lobbiesArray.add(lobby);
         lobby.registerObserver(observer);
-        observer.setLobby(lobbyRI);
+        observer.setLobby(lobby);
         return lobbyName;
     }
 
@@ -80,11 +60,6 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         }
 
         return false;
-    }
-
-    @Override
-    public HashMap<String, LobbyImpl> getLobbies() throws RemoteException{
-        return lobbies;
     }
 
     @Override
@@ -116,16 +91,6 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     @Override
     public LobbyImpl getLobby(String lobbyName) throws RemoteException {
         return lobbies.get(lobbyName);
-    }
-
-    @Override
-    public Channel getChannel() throws RemoteException {
-        return channel;
-    }
-
-    @Override
-    public boolean channelExists() throws RemoteException {
-        return this.channel != null;
     }
 
     @Override

@@ -25,8 +25,6 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
 
     private HashMap<User, String> usersTokens;
 
-    private Channel channel;
-
     public GameFactoryImpl() throws RemoteException {
         super();
         users = new ArrayList();
@@ -34,16 +32,6 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
         this.lobbies = new HashMap<>();
         this.lobbiesArray = new ArrayList<>();
         this.usersTokens = new HashMap<>();
-    }
-
-    public GameFactoryImpl(Channel channel) throws RemoteException {
-        super();
-        users = new ArrayList();
-        users.add(new User("guest", "ufp"));
-        this.lobbies = new HashMap<>();
-        this.lobbiesArray = new ArrayList<>();
-        this.usersTokens = new HashMap<>();
-        this.channel = channel;
     }
 
     @Override
@@ -63,22 +51,16 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
         if(exists(username, pwd)){
 
             User user = getUser(username, pwd);
-            GameSessionImpl session;
 
             if(!usersTokens.containsKey(user)){
 
                 String token = generateToken(username, pwd, new Date(System.currentTimeMillis() + 1800000));
                 usersTokens.put(user, token);
 
-                if(channel != null){
-                     session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray, channel);
-                }
-                else{
-                    session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
-                }
-
+                GameSessionImpl session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
                 sessions.put(username, session);
                 return session;
+
             }
 
             else{
@@ -96,13 +78,7 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
                     usersTokens.replace(user, token, newToken);
                 }
 
-                if(channel != null){
-                    session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray, channel);
-                }
-                else{
-                    session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
-                }
-
+                GameSessionImpl session = new GameSessionImpl(this, username, this.lobbies, this.lobbiesArray);
                 sessions.put(username, session);
                 return session;
 
@@ -155,10 +131,5 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoyRI
 
         return null;
 
-    }
-
-    @Override
-    public boolean channelExists() throws RemoteException {
-        return this.channel != null;
     }
 }

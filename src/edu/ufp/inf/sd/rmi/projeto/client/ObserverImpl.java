@@ -1,9 +1,5 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.projeto.client.game.engine.Game;
 import edu.ufp.inf.sd.rmi.projeto.client.game.menus.MenuHandler;
 import edu.ufp.inf.sd.rmi.projeto.client.game.menus.Pause;
@@ -11,11 +7,9 @@ import edu.ufp.inf.sd.rmi.projeto.client.game.players.Base;
 import edu.ufp.inf.sd.rmi.projeto.server.LobbyRI;
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Objects;
-import java.util.concurrent.TimeoutException;
 
 
 public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
@@ -23,8 +17,6 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     private String id;
     private State lastObserverState;
     private LobbyRI lobby;
-    private Connection connection;
-    public Channel channel;
 
     public ObserverImpl(String id) throws RemoteException {
         super();
@@ -81,6 +73,12 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
                 MenuHandler.CloseMenu();
                 Game.btl.EndTurn();
             }
+            else if (Objects.equals(m.substring(0, m.indexOf("-")), "unit")) {
+                int type = Integer.parseInt(m.substring(m.indexOf("-") + 1, m.indexOf("x")));
+                int x = Integer.parseInt(m.substring(m.indexOf("x") + 1, m.indexOf("y")));
+                int y = Integer.parseInt(m.substring(m.indexOf("y") + 1, m.indexOf(".")));
+                Game.units.add(Game.list.CreateUnit(type, Game.btl.currentplayer, x, y, false));
+            }
         }
     }
 
@@ -94,93 +92,6 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
         Game.btl.NewGame(map);
         Game.btl.AddCommanders(plyer, npc, 100, 50);
         Game.gui.InGameScreen();
-
-        bindQueue();
-
-        if(Game.gameFactoyRI.channelExists()){
-            listenQueue();
-        }
-
-    }
-
-    public void listenQueue() {
-
-        try{
-
-            channel.exchangeDeclare("lobbyFanout-" + lobby.getId(), "fanout");
-            String queueName = channel.queueDeclare().getQueue();
-            channel.queueBind(queueName, "lobbyFanout-" + lobby.getId(), "");
-
-            System.out.println();
-
-            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                String message = new String(delivery.getBody(), "UTF-8");
-                this.rabbitUpdate(message);
-            };
-            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
-
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-    }
-
-    private void bindQueue() {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        try {
-            connection = factory.newConnection();
-            channel = connection.createChannel();
-            channel.queueDeclare("lobbyQueue-" + lobby.getId(), false, false, false, null);
-        } catch (IOException | TimeoutException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void rabbitUpdate(String m) {
-
-        if (Game.GameState == Game.State.PLAYING) {
-
-            Base ply = Game.player.get(Game.btl.currentplayer);
-
-            if (Objects.equals(m, "up")) {
-                ply.selecty--;
-                if (ply.selecty<0) {
-                    ply.selecty++;
-                }
-            }
-            else if (Objects.equals(m, "down")) {
-                ply.selecty++;
-                if (ply.selecty>=Game.map.height) {
-                    ply.selecty--;
-                }
-            }
-            else if (Objects.equals(m, "left")) {
-                ply.selectx--;
-                if (ply.selectx<0) {
-                    ply.selectx++;
-                }
-            }
-            else if (Objects.equals(m, "right")) {
-                ply.selectx++;
-                if (ply.selectx>=Game.map.width) {
-                    ply.selectx--;
-                }
-            }
-            else if (Objects.equals(m, "select")) {
-                Game.btl.Action();
-            }
-            else if (Objects.equals(m, "cancel")) {
-                Game.player.get(Game.btl.currentplayer).Cancle();
-            }
-            else if (Objects.equals(m, "start")) {
-                new Pause();
-            }
-            else if (Objects.equals(m, "endRound")) {
-                MenuHandler.CloseMenu();
-                Game.btl.EndTurn();
-            }
-        }
 
     }
 
@@ -197,10 +108,5 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     @Override
     public String getID() throws RemoteException {
         return id;
-    }
-
-    @Override
-    public Channel getChannel() throws RemoteException{
-        return channel;
     }
 }

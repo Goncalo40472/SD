@@ -23,5 +23,4 @@ public interface ObserverRI extends Remote {
 
     String getID() throws RemoteException;
 
-    Channel getChannel() throws RemoteException;
 }

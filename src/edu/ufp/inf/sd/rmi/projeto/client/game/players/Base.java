@@ -2,6 +2,8 @@ package edu.ufp.inf.sd.rmi.projeto.client.game.players;
 
 import edu.ufp.inf.sd.rmi.projeto.client.game.engine.Game;
 
+import java.rmi.RemoteException;
+
 public class Base {
 	//Basic Info
 	public String name;
@@ -99,7 +101,7 @@ public class Base {
 		}
 		return false;
 	}
-	public boolean FindCity() {//Finds a city to use for menu pickings.
+	public boolean FindCity() throws RemoteException {//Finds a city to use for menu pickings.
 		for (edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base bld : Game.builds) {
 			if (bld.x==selectx&&bld.y==selecty&&bld.owner==Game.btl.currentplayer) {
 				bld.OpenMenu();

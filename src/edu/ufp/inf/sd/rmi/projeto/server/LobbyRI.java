@@ -5,11 +5,14 @@ import edu.ufp.inf.sd.rmi.projeto.client.ObserverRI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 
 public interface LobbyRI extends Remote {
 
     int getId () throws RemoteException;
+
+    List<ObserverRI> getObservers() throws RemoteException;
 
     boolean registerObserver(ObserverRI o) throws RemoteException;
 
@@ -20,4 +23,7 @@ public interface LobbyRI extends Remote {
     boolean getGameState() throws RemoteException;
 
     void setGameState(String s, ObserverRI observer) throws RemoteException;
+
+    boolean isCurrentPlayer(ObserverRI observer) throws RemoteException;
+
 }

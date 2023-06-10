@@ -1,8 +1,5 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
 import java.io.FileInputStream;
@@ -40,10 +37,6 @@ public class GameServer {
      */
     private GameFactoyRI gameFactoyRI;
 
-    private transient Connection connection;
-
-    private transient Channel channel;
-
     public static void main(String[] args) throws IOException, TimeoutException {
         if (args != null && args.length < 3) {
             System.err.println("usage: java [options] edu.ufp.sd._01_helloworld.server.HelloWorldServer <rmi_registry_ip> <rmi_registry_port> <service_name>");
@@ -52,7 +45,6 @@ public class GameServer {
             //1. ============ Create Servant ============
             GameServer hws = new GameServer(args);
             //2. ============ Rebind servant on rmiregistry ============
-            hws.setConnection();
             hws.rebindService();
         }
         /*
@@ -88,12 +80,7 @@ public class GameServer {
             Registry registry = contextRMI.getRegistry();
             //Bind service on rmiregistry and wait for calls
 
-            if(this.channel != null) {
-                this.gameFactoyRI = new GameFactoryImpl(this.channel);
-            }
-            else {
-                gameFactoyRI = new GameFactoryImpl();
-            }
+            gameFactoyRI = new GameFactoryImpl();
 
             if (registry != null) {
                 //============ Create Servant ============
@@ -114,20 +101,6 @@ public class GameServer {
         } catch (RemoteException ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void setConnection() throws IOException, TimeoutException{
-
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        this.connection = factory.newConnection();
-
-        /* UNCOMMENT TO RUN PROJECT USING RABBITMQ */
-        //this.channel = this.connection.createChannel();
-
-        /* UNCOMMENT TO RUN PROJECT USING RMI */
-        this.channel = null;
-
     }
 
     private static void loadProperties() throws IOException {

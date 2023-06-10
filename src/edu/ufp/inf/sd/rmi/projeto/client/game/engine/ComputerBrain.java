@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.engine;
 
 import java.awt.Point;
+import java.rmi.RemoteException;
 import java.util.Random;
 import edu.ufp.inf.sd.rmi.projeto.client.game.units.Base;
 
@@ -16,7 +17,7 @@ public class ComputerBrain {
 	public int CityCount;
 	
 	/**This method is hit every game loop for npcs and handles a single unit / city so it is less heavy on the game.*/
-	public void ThinkDamnYou(edu.ufp.inf.sd.rmi.projeto.client.game.players.Base ply) {
+	public void ThinkDamnYou(edu.ufp.inf.sd.rmi.projeto.client.game.players.Base ply) throws RemoteException {
 		//TODO: Redesign it to allow the npc to grab if someone is in firing range faster and easier.
 		if (finished) {
 			finished = false;
@@ -73,7 +74,7 @@ public class ComputerBrain {
 		DoneCities = true;
 	}
 
-	private void HandleBuilding(edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base bld) {
+	private void HandleBuilding(edu.ufp.inf.sd.rmi.projeto.client.game.buildings.Base bld) throws RemoteException {
 		if (!bld.Menu.equals("")) {
 			if (!bld.Locked) {
 				Random rand = new Random();

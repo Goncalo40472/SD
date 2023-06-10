@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client.game.engine;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import edu.ufp.inf.sd.rmi.projeto.client.game.menus.*;
@@ -78,7 +79,7 @@ public class Battle {
 		return total;
 	}
 	
-	public void Action() {
+	public void Action() throws RemoteException {
 		edu.ufp.inf.sd.rmi.projeto.client.game.players.Base ply = Game.player.get(currentplayer);
 		if (ply.npc) {return;}
 		if (ply.unitselected) {
@@ -97,15 +98,19 @@ public class Battle {
 		else {
 			if (!ply.FindUnit()) {
 				ply.unitselected=false;
-				ply.FindCity();
+
+				if(Game.observer.getLobby().isCurrentPlayer(Game.observer)) {
+					ply.FindCity();
+				}
+
 			}
 		}
 	}	
 	/**This will be redone when I set up the unit buying menu.*/
-	public void Buyunit(int type, int x, int y) {
+	public void Buyunit(int type, int x, int y) throws RemoteException {
 		double cost = Game.displayU.get(type).cost*Game.player.get(currentplayer).CostBonus;
-		if (Game.player.get(currentplayer).money>=cost) {
-			Game.units.add(Game.list.CreateUnit(type, currentplayer, x, y, false));
+		if (Game.player.get(currentplayer).money>=cost && Game.observer.getLobby().isCurrentPlayer(Game.observer)) {
+			Game.observer.getLobby().setGameState("unit-" + type + "x" + x + "y" + y + ".", Game.observer);
 			Game.player.get(currentplayer).money-=cost;
 		}
 	}
