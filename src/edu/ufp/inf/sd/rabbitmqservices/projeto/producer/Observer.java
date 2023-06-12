@@ -104,6 +104,7 @@ public class Observer {
 
                     if(this.currentPlayers <= currentPlayers) {
                         this.currentPlayers = currentPlayers;
+                        System.out.println(this.currentPlayers);
                         if(this.id == -1) {
                             this.id = currentPlayers - 1;
                             gui.setPlayerId(currentPlayers - 1);
@@ -125,7 +126,7 @@ public class Observer {
                     }
                     else if(!lobbies.containsKey(message)) {
                         lobbies.put(message, 1);
-                        currentPlayers++;
+                        currentPlayers = 1;
                         gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                     }
 
@@ -140,12 +141,11 @@ public class Observer {
                         lobbies.replace(message, lobbies.get(message), lobbies.get(message) + 1);
                         currentPlayers++;
                         gui.sendMsg("currentPlayers-" + currentPlayers + ",");
-                        currentPlayers++;
                     }
                     else if(!lobbies.containsKey(message)) {
-                        currentPlayers++;
-                        gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                         lobbies.put(message, 1);
+                        currentPlayers = 1;
+                        gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                     }
 
                     if(lobbies.containsKey(message) && lobbies.get(message) == 4) {
