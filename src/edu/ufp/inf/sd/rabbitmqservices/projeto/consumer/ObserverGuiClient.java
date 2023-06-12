@@ -19,6 +19,7 @@ import edu.ufp.inf.sd.rabbitmqservices.projeto.game.menus.Pause;
 import edu.ufp.inf.sd.rabbitmqservices.projeto.game.players.Base;
 import edu.ufp.inf.sd.rabbitmqservices.projeto.producer.Observer;
 import edu.ufp.inf.sd.rabbitmqservices.util.RabbitUtils;
+import edu.ufp.inf.sd.rmi.projeto.client.game.menus.MenuHandler;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -82,6 +83,7 @@ public class ObserverGuiClient {
         else if (Objects.equals(i, "select")) {Game.btl.Action();}
         else if (Objects.equals(i, "cancel")) {Game.player.get(Game.btl.currentplayer).Cancle();}
         else if (Objects.equals(i, "start")) {new Pause();}
+        else if (Objects.equals(i, "endRound")) {MenuHandler.CloseMenu();Game.btl.EndTurn();}
 
     }
 

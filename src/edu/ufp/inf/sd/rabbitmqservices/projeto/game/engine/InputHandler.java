@@ -41,6 +41,7 @@ public class InputHandler implements KeyListener,MouseListener,ActionListener {
 	private final int select = KeyEvent.VK_Z;
 	private final int cancel = KeyEvent.VK_X;
 	private final int start = KeyEvent.VK_ENTER;
+	private final int endRound = KeyEvent.VK_K;
 	
 	//Mouse (right/left clicks)
 	private final int main = MouseEvent.BUTTON1;
@@ -57,13 +58,14 @@ public class InputHandler implements KeyListener,MouseListener,ActionListener {
 		if (i==exit) {System.exit(0);}
 		if (Game.GameState==Game.State.PLAYING) {
 
-			if (i==up) {Game.observer.sendMsg("Input#up.");}
-			else if (i==down) {Game.observer.sendMsg("Input#down.");}
-			else if (i==left) {Game.observer.sendMsg("Input#left.");}
-			else if (i==right) {Game.observer.sendMsg("Input#right.");}
-			else if (i==select) {Game.observer.sendMsg("Input#select.");}
-			else if (i==cancel) {Game.observer.sendMsg("Input#cancel.");}
-			else if (i==start) {Game.observer.sendMsg("Input#start.");}
+			if (i==up) {Game.observer.sendMsg("Input#up*");}
+			else if (i==down) {Game.observer.sendMsg("Input#down*");}
+			else if (i==left) {Game.observer.sendMsg("Input#left*");}
+			else if (i==right) {Game.observer.sendMsg("Input#right*");}
+			else if (i==select) {Game.observer.sendMsg("Input#select*");}
+			else if (i==cancel) {Game.observer.sendMsg("Input#cancel*");}
+			else if (i==start) {Game.observer.sendMsg("Input#start*");}
+			else if (i == endRound) {Game.observer.sendMsg("Input#endRound*");}
 		}
 
 		if (Game.GameState==Game.State.EDITOR) {

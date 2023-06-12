@@ -47,8 +47,6 @@ public class Observer {
 
         this.exchangeName=exchangeName;
         this.exchangeType=exchangeType;
-        //String[] bindingKeys={"",""};
-        //this.exchangeBindingKeys=bindingKeys;
         this.messageFormat=messageFormat;
 
         bindExchangeToChannelRabbitMQ();
@@ -95,7 +93,7 @@ public class Observer {
                 System.out.println(message);
 
                 if(message.substring(0, message.indexOf("#")).equals("Input")) {
-                    gui.inputs(message.substring(message.indexOf("#") + 1, message.indexOf(".")));
+                    gui.inputs(message.substring(message.indexOf("#") + 1, message.indexOf("*")));
                 }
 
                 if(message.substring(0, message.indexOf("#")).equals("SmallVs")) {
@@ -108,7 +106,7 @@ public class Observer {
                     }
 
                     if(lobbies.containsKey(message) && lobbies.get(message) == 2) {
-                        gui.sendMsg("Start#SmallVs.");
+                        gui.sendMsg("Start#SmallVs*");
                     }
 
                 }
@@ -122,13 +120,13 @@ public class Observer {
                     }
 
                     if(lobbies.containsKey(message) && lobbies.get(message) == 4) {
-                        gui.sendMsg("Start#FourCorners.");
+                        gui.sendMsg("Start#FourCorners*");
                     }
 
                 }
 
                 if(message.substring(0, message.indexOf("#")).equals("Start")) {
-                    gui.initGame(message.substring(message.indexOf("#") + 1, message.indexOf(".")));
+                    gui.initGame(message.substring(message.indexOf("#") + 1, message.indexOf("*")));
                 }
 
             };
@@ -154,6 +152,8 @@ public class Observer {
         //RoutingKey will be ignored by FANOUT exchange
         String routingKey="";
         BasicProperties prop = MessageProperties.PERSISTENT_TEXT_PLAIN;
+
+        System.out.println(msgToSend);
 
         // TODO: Publish message
         channelToRabbitMq.basicPublish(exchangeName, routingKey, null,
