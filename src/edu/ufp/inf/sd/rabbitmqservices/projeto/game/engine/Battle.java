@@ -97,15 +97,18 @@ public class Battle {
 		else {
 			if (!ply.FindUnit()) {
 				ply.unitselected=false;
-				ply.FindCity();
+
+				if(Game.observer.getPlayerId() == Game.observer.getToken().getHolder()) {
+					ply.FindCity();
+				}
 			}
 		}
 	}	
 	/**This will be redone when I set up the unit buying menu.*/
 	public void Buyunit(int type, int x, int y) {
 		double cost = Game.displayU.get(type).cost*Game.player.get(currentplayer).CostBonus;
-		if (Game.player.get(currentplayer).money>=cost) {
-			Game.units.add(Game.list.CreateUnit(type, currentplayer, x, y, false));
+		if (Game.player.get(currentplayer).money>=cost && Game.observer.getToken().getHolder() == Game.observer.getPlayerId()) {
+			Game.observer.sendMsg("Input-unit!" + type + "x" + x + "y" + y + ",");
 			Game.player.get(currentplayer).money-=cost;
 		}
 	}

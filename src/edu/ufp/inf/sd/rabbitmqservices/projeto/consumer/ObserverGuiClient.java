@@ -19,7 +19,8 @@ import edu.ufp.inf.sd.rabbitmqservices.projeto.game.menus.Pause;
 import edu.ufp.inf.sd.rabbitmqservices.projeto.game.players.Base;
 import edu.ufp.inf.sd.rabbitmqservices.projeto.producer.Observer;
 import edu.ufp.inf.sd.rabbitmqservices.util.RabbitUtils;
-import edu.ufp.inf.sd.rmi.projeto.client.game.menus.MenuHandler;
+import edu.ufp.inf.sd.rabbitmqservices.projeto.game.menus.MenuHandler;
+import edu.ufp.inf.sd.rabbitmqservices.projeto.producer.TokenRing;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -33,7 +34,8 @@ import java.util.logging.Logger;
 public class ObserverGuiClient {
 
     private Observer observer;
-
+    private TokenRing token;
+    private int playerId = -1;
     /**
      * Creates new form ChatClientFrame
      *
@@ -69,22 +71,82 @@ public class ObserverGuiClient {
      * whenever a new msg is received/consumed from the broker.
      */
     public void initGame(String map) {
-        new Game(map, this);
+
+        if(Objects.equals(map, "SmallVs")) {
+            token = new TokenRing(2);
+        } else if (Objects.equals(map, "FourCorners")) {
+            token = new TokenRing(4);
+        }
+
+        ObserverGuiClient me=this;
+        new Thread(() -> new Game(map, me)).start();
+    }
+
+    public TokenRing getToken() {
+        return token;
+    }
+
+    public int getPlayerId(){
+        return playerId;
     }
 
     public void inputs(String i){
 
         Base ply = Game.player.get(Game.btl.currentplayer);
 
-        if (Objects.equals(i, "up")) {ply.selecty--;if (ply.selecty<0) {ply.selecty++;}}
-        else if (Objects.equals(i, "down")) {ply.selecty++;if (ply.selecty>=Game.map.height) {ply.selecty--;}}
-        else if (Objects.equals(i, "left")) {ply.selectx--;if (ply.selectx<0) {ply.selectx++;}}
-        else if (Objects.equals(i, "right")) {ply.selectx++;if (ply.selectx>=Game.map.width) {ply.selectx--;}}
-        else if (Objects.equals(i, "select")) {Game.btl.Action();}
-        else if (Objects.equals(i, "cancel")) {Game.player.get(Game.btl.currentplayer).Cancle();}
-        else if (Objects.equals(i, "start")) {new Pause();}
-        else if (Objects.equals(i, "endRound")) {MenuHandler.CloseMenu();Game.btl.EndTurn();}
+        if (Objects.equals(i, "up")) {
+            ply.selecty--;
+            if (ply.selecty<0) {
+                ply.selecty++;
+            }
+        }
+        else if (Objects.equals(i, "down")) {
+            ply.selecty++;
+            if (ply.selecty>=Game.map.height) {
+                ply.selecty--;
+            }
+        }
+        else if (Objects.equals(i, "left")) {
+            ply.selectx--;
+            if (ply.selectx<0) {
+                ply.selectx++;
+            }
+        }
+        else if (Objects.equals(i, "right")) {
+            ply.selectx++;
+            if (ply.selectx>=Game.map.width) {
+                ply.selectx--;
+            }
+        }
+        else if (Objects.equals(i, "select")) {
+            Game.btl.Action();
+        }
+        else if (Objects.equals(i, "cancel")) {
+            Game.player.get(Game.btl.currentplayer).Cancle();
+        }
+        else if (Objects.equals(i, "start")) {
+            new Pause();
+        }
+        else if (Objects.equals(i, "endRound")) {
+            if(this.playerId == token.getHolder()){
+                sendMsg("passToken");
+            }
+            MenuHandler.CloseMenu();
+            Game.btl.EndTurn();
+        }
+        else if (Objects.equals(i.substring(i.indexOf("-") + 1, i.indexOf("!")), "unit")) {
+            System.out.println(i);
+            int type = Integer.parseInt(i.substring(i.indexOf("!") + 1, i.indexOf("x")));
+            int x = Integer.parseInt(i.substring(i.indexOf("x") + 1, i.indexOf("y")));
+            int y = Integer.parseInt(i.substring(i.indexOf("y") + 1));
+            Game.units.add(Game.list.CreateUnit(type, Game.btl.currentplayer, x, y, false));
+        }
 
+    }
+
+    public void setPlayerId(int id) {
+        this.playerId = id;
+        System.out.println(playerId);
     }
 
     /**

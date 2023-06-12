@@ -10,6 +10,7 @@ import edu.ufp.inf.sd.rabbitmqservices.util.RabbitUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -22,8 +23,11 @@ public class Observer {
 
     //Reference for gui
     private final ObserverGuiClient gui;
+    private int currentPlayers = 0;
+    private int id = -1;
 
     private HashMap<String, Integer> lobbies = new HashMap<>();
+    private HashMap<ObserverGuiClient, String> observers = new HashMap<>();
 
     //Preferences for exchange...
     private final Channel channelToRabbitMq;
@@ -90,43 +94,67 @@ public class Observer {
 
                 // TODO: Notify the GUI about the new message arrive;
 
-                System.out.println(message);
-
-                if(message.substring(0, message.indexOf("#")).equals("Input")) {
-                    gui.inputs(message.substring(message.indexOf("#") + 1, message.indexOf("*")));
+                if(message.equals("passToken")) {
+                    gui.getToken().passToken();
                 }
 
-                if(message.substring(0, message.indexOf("#")).equals("SmallVs")) {
+                else if (message.substring(0, message.indexOf("-")).equals("currentPlayers")) {
+
+                    int currentPlayers = Integer.parseInt(message.substring(message.indexOf("-") + 1, message.indexOf(",")));
+
+                    if(this.currentPlayers <= currentPlayers) {
+                        this.currentPlayers = currentPlayers;
+                        if(this.id == -1) {
+                            this.id = currentPlayers - 1;
+                            gui.setPlayerId(currentPlayers - 1);
+                            System.out.println(gui.getPlayerId());
+                        }
+                    }
+                }
+
+                else if(message.substring(0, message.indexOf("-")).equals("Input")) {
+                    gui.inputs(message.substring(message.indexOf("-") + 1, message.indexOf(",")));
+                }
+
+                else if(message.substring(0, message.indexOf("-")).equals("SmallVs")) {
 
                     if(lobbies.containsKey(message) && lobbies.get(message) < 2) {
                         lobbies.replace(message, lobbies.get(message), lobbies.get(message) + 1);
+                        currentPlayers++;
+                        gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                     }
                     else if(!lobbies.containsKey(message)) {
                         lobbies.put(message, 1);
+                        currentPlayers++;
+                        gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                     }
 
                     if(lobbies.containsKey(message) && lobbies.get(message) == 2) {
-                        gui.sendMsg("Start#SmallVs*");
+                        gui.sendMsg("Start-SmallVs,");
                     }
 
                 }
-                else if(message.substring(0, message.indexOf("#")).equals("FourCorners")) {
+                else if(message.substring(0, message.indexOf("-")).equals("FourCorners")) {
 
                     if(lobbies.containsKey(message) && lobbies.get(message) < 4) {
                         lobbies.replace(message, lobbies.get(message), lobbies.get(message) + 1);
+                        currentPlayers++;
+                        gui.sendMsg("currentPlayers-" + currentPlayers + ",");
+                        currentPlayers++;
                     }
                     else if(!lobbies.containsKey(message)) {
+                        currentPlayers++;
+                        gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                         lobbies.put(message, 1);
                     }
 
                     if(lobbies.containsKey(message) && lobbies.get(message) == 4) {
-                        gui.sendMsg("Start#FourCorners*");
+                        gui.sendMsg("Start-FourCorners,");
                     }
-
                 }
 
-                if(message.substring(0, message.indexOf("#")).equals("Start")) {
-                    gui.initGame(message.substring(message.indexOf("#") + 1, message.indexOf("*")));
+                else if(message.substring(0, message.indexOf("-")).equals("Start")) {
+                    gui.initGame(message.substring(message.indexOf("-") + 1, message.indexOf(",")));
                 }
 
             };
@@ -152,8 +180,6 @@ public class Observer {
         //RoutingKey will be ignored by FANOUT exchange
         String routingKey="";
         BasicProperties prop = MessageProperties.PERSISTENT_TEXT_PLAIN;
-
-        System.out.println(msgToSend);
 
         // TODO: Publish message
         channelToRabbitMq.basicPublish(exchangeName, routingKey, null,
