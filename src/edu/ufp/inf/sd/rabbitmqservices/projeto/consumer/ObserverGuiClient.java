@@ -36,6 +36,9 @@ public class ObserverGuiClient {
     private Observer observer;
     private TokenRing token;
     private int playerId = -1;
+
+    private int numOpenGames = 0;
+
     /**
      * Creates new form ChatClientFrame
      *
@@ -49,15 +52,12 @@ public class ObserverGuiClient {
             String host=args[0];
             int port=Integer.parseInt(args[1]);
             String exchangeName=args[2];
-            //String room=args[3];
-            String lobby=args[3];
-            //String general=args[5];
+            String lobby = args[3];
 
-            //2. Create the _05_observer object that manages send/receive of messages to/from rabbitmq
-            this.observer= new Observer(this, host, port, "guest", "guest", exchangeName, BuiltinExchangeType.FANOUT, "UTF-8");
+            this.observer= new Observer(this, host, port, "guest", "guest", lobby, exchangeName, BuiltinExchangeType.TOPIC, "UTF-8");
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, " After initObserver()...");
 
-            this.observer.sendMessage(lobby);
+            sendMsg(lobby);
 
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
@@ -71,15 +71,18 @@ public class ObserverGuiClient {
      * whenever a new msg is received/consumed from the broker.
      */
     public void initGame(String map) {
+        if(numOpenGames == 0){
+            if(Objects.equals(map, "SmallVs")) {
+                token = new TokenRing(2);
+            } else if (Objects.equals(map, "FourCorners")) {
+                token = new TokenRing(4);
+            }
 
-        if(Objects.equals(map, "SmallVs")) {
-            token = new TokenRing(2);
-        } else if (Objects.equals(map, "FourCorners")) {
-            token = new TokenRing(4);
+            ObserverGuiClient me=this;
+            new Thread(() -> new Game(map, me)).start();
+
+            numOpenGames++;
         }
-
-        ObserverGuiClient me=this;
-        new Thread(() -> new Game(map, me)).start();
     }
 
     public TokenRing getToken() {

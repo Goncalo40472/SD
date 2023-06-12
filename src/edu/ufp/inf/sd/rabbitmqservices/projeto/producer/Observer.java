@@ -25,9 +25,7 @@ public class Observer {
     private final ObserverGuiClient gui;
     private int currentPlayers = 0;
     private int id = -1;
-
-    private HashMap<String, Integer> lobbies = new HashMap<>();
-    private HashMap<ObserverGuiClient, String> observers = new HashMap<>();
+    private String lobby;
 
     //Preferences for exchange...
     private final Channel channelToRabbitMq;
@@ -42,13 +40,14 @@ public class Observer {
     /**
      * @param gui
      */
-    public Observer(ObserverGuiClient gui, String host, int port, String user, String pass, String exchangeName, BuiltinExchangeType exchangeType, String messageFormat) throws IOException, TimeoutException {
+    public Observer(ObserverGuiClient gui, String host, int port, String user, String pass, String lobby, String exchangeName, BuiltinExchangeType exchangeType, String messageFormat) throws IOException, TimeoutException {
         this.gui=gui;
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, " going to attach observer to host: " + host + "...");
 
         Connection connection=RabbitUtils.newConnection2Server(host, port, user, pass);
         this.channelToRabbitMq=RabbitUtils.createChannel2Server(connection);
 
+        this.lobby = lobby;
         this.exchangeName=exchangeName;
         this.exchangeType=exchangeType;
         this.messageFormat=messageFormat;
@@ -62,8 +61,6 @@ public class Observer {
      */
     private void bindExchangeToChannelRabbitMQ() throws IOException {
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Declaring Exchange '" + this.exchangeName + "' with type " + this.exchangeType);
-
-        /* TODO: Declare exchange type  */
         channelToRabbitMq.exchangeDeclare(exchangeName, exchangeType);
     }
 
@@ -72,12 +69,9 @@ public class Observer {
      */
     public void attachConsumerToChannelExchangeWithKey() {
         try {
-            /* TODO: Create a non-durable, exclusive, autodelete queue with a generated name.
-                The string queueName will contain a random queue name (e.g. amq.gen-JzTY20BRgKO-HjmUJj0wLg) */
             String queueName=channelToRabbitMq.queueDeclare().getQueue();
 
-            /* TODO: Create binding: tell exchange to send messages to a queue; fanout exchange ignores the last parameter (binding key) */
-            String routingKey = "";
+            String routingKey = lobby;
             channelToRabbitMq.queueBind(queueName, exchangeName, routingKey);
 
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, " Created consumerChannel bound to Exchange " + this.exchangeName + "...");
@@ -92,8 +86,6 @@ public class Observer {
                 setReceivedMessage(message);
                 System.out.println(" [x] Consumer Tag [" + consumerTag + "] - Received '" + message + "'");
 
-                // TODO: Notify the GUI about the new message arrive;
-
                 if(message.equals("passToken")) {
                     gui.getToken().passToken();
                 }
@@ -104,11 +96,9 @@ public class Observer {
 
                     if(this.currentPlayers <= currentPlayers) {
                         this.currentPlayers = currentPlayers;
-                        System.out.println(this.currentPlayers);
                         if(this.id == -1) {
                             this.id = currentPlayers - 1;
                             gui.setPlayerId(currentPlayers - 1);
-                            System.out.println(gui.getPlayerId());
                         }
                     }
                 }
@@ -119,36 +109,32 @@ public class Observer {
 
                 else if(message.substring(0, message.indexOf("-")).equals("SmallVs")) {
 
-                    if(lobbies.containsKey(message) && lobbies.get(message) < 2) {
-                        lobbies.replace(message, lobbies.get(message), lobbies.get(message) + 1);
+                    if(currentPlayers == 1) {
                         currentPlayers++;
                         gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                     }
-                    else if(!lobbies.containsKey(message)) {
-                        lobbies.put(message, 1);
+                    else if(currentPlayers == 0) {
                         currentPlayers = 1;
                         gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                     }
 
-                    if(lobbies.containsKey(message) && lobbies.get(message) == 2) {
+                    if(currentPlayers == 2) {
                         gui.sendMsg("Start-SmallVs,");
                     }
 
                 }
                 else if(message.substring(0, message.indexOf("-")).equals("FourCorners")) {
 
-                    if(lobbies.containsKey(message) && lobbies.get(message) < 4) {
-                        lobbies.replace(message, lobbies.get(message), lobbies.get(message) + 1);
+                    if(currentPlayers > 0 && currentPlayers < 4) {
                         currentPlayers++;
                         gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                     }
-                    else if(!lobbies.containsKey(message)) {
-                        lobbies.put(message, 1);
+                    else if(currentPlayers == 0) {
                         currentPlayers = 1;
                         gui.sendMsg("currentPlayers-" + currentPlayers + ",");
                     }
 
-                    if(lobbies.containsKey(message) && lobbies.get(message) == 4) {
+                    if(currentPlayers == 4) {
                         gui.sendMsg("Start-FourCorners,");
                     }
                 }
@@ -162,7 +148,6 @@ public class Observer {
                 System.out.println(" [x] Consumer Tag [" + consumerTag + "] - Cancel Callback invoked!");
             };
 
-            // TODO: Consume with deliver and cancel callbacks
             channelToRabbitMq.basicConsume(queueName, true, deliverCallback, cancelCallback);
 
         } catch (Exception e) {
@@ -177,11 +162,9 @@ public class Observer {
      * - Basic properties can be: MessageProperties.PERSISTENT_TEXT_PLAIN, etc.
      */
     public void sendMessage(String msgToSend) throws IOException {
-        //RoutingKey will be ignored by FANOUT exchange
-        String routingKey="";
+        String routingKey = this.lobby;
         BasicProperties prop = MessageProperties.PERSISTENT_TEXT_PLAIN;
 
-        // TODO: Publish message
         channelToRabbitMq.basicPublish(exchangeName, routingKey, null,
                 msgToSend.getBytes("UTF-8"));
     }
