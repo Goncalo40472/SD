@@ -1,7 +1,6 @@
 package edu.ufp.inf.sd.rabbitmqservices.projeto.game.engine;
 
-import edu.ufp.inf.sd.rabbitmqservices.projeto.consumer.ObserverGuiClient;
-import edu.ufp.inf.sd.rabbitmqservices.projeto.producer.Observer;
+import edu.ufp.inf.sd.rabbitmqservices.projeto.client.GameClient;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -11,7 +10,7 @@ import javax.swing.JFrame;
 
 public class Game extends JFrame {
 
-	public static ObserverGuiClient observer;
+	public static GameClient observer;
 	private static final long serialVersionUID = 1L;
 	
 	//Application Settings
@@ -59,7 +58,7 @@ public class Game extends JFrame {
 	public static List<edu.ufp.inf.sd.rabbitmqservices.projeto.game.buildings.Base> displayB = new ArrayList<edu.ufp.inf.sd.rabbitmqservices.projeto.game.buildings.Base>();
 	public static List<edu.ufp.inf.sd.rabbitmqservices.projeto.game.units.Base> displayU = new ArrayList<edu.ufp.inf.sd.rabbitmqservices.projeto.game.units.Base>();
 	
-	public Game(String mapName, ObserverGuiClient o) {super (name);
+	public Game(String mapName, GameClient o) {super (name);
 		//Default Settings of the JFrame
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(new Dimension(20*ScreenBase+6,12*ScreenBase+12));

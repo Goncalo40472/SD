@@ -1,4 +1,4 @@
-package edu.ufp.inf.sd.rabbitmqservices.projeto.producer;
+package edu.ufp.inf.sd.rabbitmqservices.projeto.server;
 
 public class TokenRing {
 
