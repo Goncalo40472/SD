@@ -108,7 +108,7 @@ public class Battle {
 	public void Buyunit(int type, int x, int y) {
 		double cost = Game.displayU.get(type).cost*Game.player.get(currentplayer).CostBonus;
 		if (Game.player.get(currentplayer).money>=cost && Game.observer.getToken().getHolder() == Game.observer.getPlayerId()) {
-			Game.observer.sendMsg("Input-unit!" + type + "x" + x + "y" + y + ",");
+			Game.observer.sendMsg("Input-unit!" + type + "x" + x + "y" + y);
 			Game.player.get(currentplayer).money-=cost;
 		}
 	}

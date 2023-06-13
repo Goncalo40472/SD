@@ -30,9 +30,7 @@
 @Set PACKAGE=projeto
 @Set QUEUE_NAME_PREFIX=pubsub
 @Set EXCHANGE_NAME_PREFIX=topic_logs
-@Set PRODUCER_CLASS_PREFIX=EmitLog
-@Set CONSUMER_CLASS_PREFIX=ReceiveLogs
-@Set OBSERVER_CLASS_PREFIx=ObserverGuiClient
+@Set GAME_CLASS_PREFIx=GameClient
 
 @REM ==== NETWORK STUFF ====
 @Set BROKER_HOST=localhost

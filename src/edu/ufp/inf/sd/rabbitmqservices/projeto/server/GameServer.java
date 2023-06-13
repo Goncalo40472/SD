@@ -74,13 +74,13 @@ public class GameServer {
                 else if (message.substring(0, message.indexOf("-")).equals("SetGameFull")) {
 
                     gameFull = true;
-                    client.sendMsg("Start-" + message.substring(message.indexOf("-") + 1) + ",");
+                    client.sendMsg("Start-" + message.substring(message.indexOf("-") + 1));
 
                 }
 
                 else if (message.substring(0, message.indexOf("-")).equals("currentPlayers")) {
 
-                    int currentPlayers = Integer.parseInt(message.substring(message.indexOf("-") + 1, message.indexOf(",")));
+                    int currentPlayers = Integer.parseInt(message.substring(message.indexOf("-") + 1));
 
                     if(this.currentPlayers <= currentPlayers) {
                         this.currentPlayers = currentPlayers;
@@ -92,18 +92,18 @@ public class GameServer {
                 }
 
                 else if(message.substring(0, message.indexOf("-")).equals("Input")) {
-                    client.inputs(message.substring(message.indexOf("-") + 1, message.indexOf(",")));
+                    client.inputs(message.substring(message.indexOf("-") + 1));
                 }
 
                 else if(message.substring(0, message.indexOf("-")).equals("SmallVs")) {
 
                     if(currentPlayers == 1) {
                         currentPlayers++;
-                        client.sendMsg("currentPlayers-" + currentPlayers + ",");
+                        client.sendMsg("currentPlayers-" + currentPlayers);
                     }
                     else if(currentPlayers == 0) {
                         currentPlayers = 1;
-                        client.sendMsg("currentPlayers-" + currentPlayers + ",");
+                        client.sendMsg("currentPlayers-" + currentPlayers);
                     }
 
                     if(currentPlayers == 2 && !gameFull) {
@@ -117,11 +117,11 @@ public class GameServer {
 
                     if(currentPlayers > 0 && currentPlayers < 4) {
                         currentPlayers++;
-                        client.sendMsg("currentPlayers-" + currentPlayers + ",");
+                        client.sendMsg("currentPlayers-" + currentPlayers);
                     }
                     else if(currentPlayers == 0) {
                         currentPlayers = 1;
-                        client.sendMsg("currentPlayers-" + currentPlayers + ",");
+                        client.sendMsg("currentPlayers-" + currentPlayers);
                     }
 
                     if(currentPlayers == 4 && !gameFull) {
@@ -133,7 +133,7 @@ public class GameServer {
 
                 else if(message.substring(0, message.indexOf("-")).equals("Start") && gameFull) {
                     client.setGameRunning();
-                    client.initGame(message.substring(message.indexOf("-") + 1, message.indexOf(",")));
+                    client.initGame(message.substring(message.indexOf("-") + 1));
                 }
 
             };
