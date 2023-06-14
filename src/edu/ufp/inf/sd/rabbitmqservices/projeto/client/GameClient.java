@@ -18,7 +18,7 @@ public class GameClient {
 
     private GameServer gameServer;
     private TokenRing token;
-    private int playerId = -1;
+    private int playerId;
 
     private int numOpenGames = 0;
     private boolean gameRunning = false;

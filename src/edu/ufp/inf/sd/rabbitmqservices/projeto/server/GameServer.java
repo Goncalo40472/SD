@@ -14,7 +14,7 @@ public class GameServer {
 
     private final GameClient client;
     private int currentPlayers = 0;
-    private int id = -1;
+    private int count = 0;
     private final String lobby;
     private boolean gameFull = false;
 
@@ -79,16 +79,7 @@ public class GameServer {
                 }
 
                 else if (message.substring(0, message.indexOf("-")).equals("currentPlayers")) {
-
-                    int currentPlayers = Integer.parseInt(message.substring(message.indexOf("-") + 1));
-
-                    if(this.currentPlayers <= currentPlayers) {
-                        this.currentPlayers = currentPlayers;
-                        if(this.id == -1) {
-                            this.id = currentPlayers - 1;
-                            client.setPlayerId(currentPlayers - 1);
-                        }
-                    }
+                    count++;
                 }
 
                 else if(message.substring(0, message.indexOf("-")).equals("Input")) {
@@ -132,8 +123,29 @@ public class GameServer {
                 }
 
                 else if(message.substring(0, message.indexOf("-")).equals("Start") && gameFull) {
+
+                    String map = message.substring(message.indexOf("-") + 1);
+
+                    if(map.equals("SmallVs")) {
+                        client.setPlayerId(count - 2);
+                    }
+                    else if(map.equals("FourCorners")) {
+                        if(count == 4) {
+                            client.setPlayerId(0);
+                        }
+                        else if(count == 7) {
+                            client.setPlayerId(1);
+                        }
+                        else if(count == 9) {
+                            client.setPlayerId(2);
+                        }
+                        else if(count == 10) {
+                            client.setPlayerId(3);
+                        }
+                    }
+
                     client.setGameRunning();
-                    client.initGame(message.substring(message.indexOf("-") + 1));
+                    client.initGame(map);
                 }
 
             };
